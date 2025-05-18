@@ -1,5 +1,5 @@
 ---
-title: "Excel .XLSX is Just Text Files in a Trench Coat"
+title: "XLSX are Just Text Files in a Trench Coat"
 date: 2024-06-05 12:00:00 -0400
 categories: [Technology, Data]
 tags: [xml, excel, soap, file-formats, python]
@@ -7,7 +7,7 @@ tags: [xml, excel, soap, file-formats, python]
 
 # It's XML All the Way Down
 
-I was forced to use XML to create a series of requests to an API that was only available in SOAP. Fortunately, there is a Python library called Zeep ([docs.python-zeep.org/](https://docs.python-zeep.org/)) – without it, I would have been completely lost. I grumbled through this task, feeling like I was working on something that if not destined to be obsolete was well on its way.
+A few years ago I was tasked with using an api to use an API with poor documentation that was only available in SOAP. Fortunately, there is a Python library called Zeep ([docs.python-zeep.org/](https://docs.python-zeep.org/)) – without it, I would have been completely lost. I grumbled through this task, feeling like I was working on something that if not already obsolete was well on its way.
 
 Only recently, I learned that XLSX files are actually zipped XML files. So let's take one apart:
 
@@ -36,15 +36,12 @@ user/downloads/
 
 
 
-### 5. Now you can change the file extension to .zip and unzip the file to see the contents
+### 4. Now you can change the file extension to .zip and unzip the file to see the contents
 
-user/downloads/
-├── _rels/
-│   └── .rels
-├── docProps/
-│   ├── app.xml
-│   ├── core.xml
-│   └── custom.xml        (optional)
+![Top of the xml folder](/assets/img/2024-06-05-xml-all-the-things/firstlevel.png)
+
+What we thought was a single file is actually a nested folder structure. 
+
 ├── xl/
 │   ├── _rels/
 │   │   └── workbook.xml.rels
@@ -55,14 +52,14 @@ user/downloads/
 │   ├── styles.xml
 │   ├── workbook.xml
 │   └── sharedStrings.xml (optional)
-├── [Content_Types].xml
-├── data.csv (210 KB)
-└── data.zip (approx. 768 KB)
+
+![nested xml](/assets/img/2024-06-05-xml-all-the-things/xl_level.png)
+
 
 
 
 Now the weird changes in file size and why some (relatively) small XLSX files take so long to open almost makes sense. When I heard it was the Microsoft standard since 2007, I instantly assumed it was some nefarious plot to consolidate their market share. But actually, it opened up Excel from a proprietary to an open format called [Office Open XML (OOXML)](https://en.wikipedia.org/wiki/Office_Open_XML). My bad Microsoft. I guess I should have read the [ISO/IEC 29500:2008](https://www.iso.org/standard/39574.html) standard before jumping to conclusions.
 
-## A Brief History of XML
+## XML Forever?
 
-XML (eXtensible Markup Language) was created in the late 1990s to replace SGML which I am guessing was a replacement for something else.  So knowledge marches on.
+XML (eXtensible Markup Language) was created in the late 1990s to replace SGML which I am guessing was a replacement for something else. JSON (JavaScript Object Notation) is a lighter weight alternative but obviously ther are still many applications where XML is the better choice.
