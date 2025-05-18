@@ -51,7 +51,7 @@ What we thought was a single file is actually a nested folder structure.
 │   │   └── sheet1.xml
 │   ├── styles.xml
 │   ├── workbook.xml
-│   └── sharedStrings.xml (optional)
+│   └── sharedStrings.xml 
 
 ![nested xml](/assets/img/2024-06-05-xml-all-the-things/xl_level.png)
 
