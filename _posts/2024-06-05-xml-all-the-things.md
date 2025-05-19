@@ -62,4 +62,4 @@ Now the weird changes in file size and why some (relatively) small XLSX files ta
 
 ## XML Forever?
 
-XML (eXtensible Markup Language) was created in the late 1990s to replace SGML which I am guessing was a replacement for something else. JSON (JavaScript Object Notation) is a lighter weight alternative but obviously ther are still many applications where XML is the better choice.
+XML (eXtensible Markup Language) was created in the late 1990s to replace SGML which I am guessing was a replacement for something else. JSON (JavaScript Object Notation) is a lighter weight alternative but obviously ther are still many applications where XML is the better choice. Or in the case of XLSX, the only choice.
