@@ -1,11 +1,11 @@
 ---
-layout: post
 title: "Identifying Microsoft Teams Storage Usage with Python and Graph API"
-date: YYYY-MM-DD HH:MM:SS -0000 # Adjust to your date
-categories: python microsoft-graph teams admin
+date: 2024-07-10 12:00:00 -0400
+categories: [Development, Administration]
+tags: [python, microsoft-graph, teams, admin]
 ---
 
-I usually have a hard time learning something when the information is completely abstarct, but many times I have had to help identify who is over consuming resources. Also I am going to use synchronous and Async code in the same script. I am going to use the Microsoft Graph API to get a list of all the teams in my organization and then get the storage usage for each team.  So hopefully someone will find this useful too.
+I usually have a hard time learning something when the information is completely abstract I much prefer a practical application, but many times I have had to help identify who is over consuming resources. But I don't want to expose the internal workings of any of my clients.  In this case we are going to use the example of a school. We are  going to compare synchronous and async code in the Microsoft Graph API to get a list of all the teams in my organization and then get the storage usage for each team.
 
 ## Prerequisites
 
@@ -37,9 +37,9 @@ import json
 import requests
 from msal import ConfidentialClientApplication
 import pandas as pd
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 import time
-from time import sleep # Optional for deliberate delays
+from time import sleep  # Optional for deliberate delays
 
 # --- Credentials - Replace with your actual values ---
 client_id = 'YOUR_CLIENT_ID'
@@ -47,8 +47,8 @@ tenant_id = 'YOUR_TENANT_ID'
 client_secret = 'YOUR_CLIENT_SECRET'
 # --- End Credentials ---
 
-msal_authority = f"[https://login.microsoftonline.com/](https://login.microsoftonline.com/){tenant_id}"
-msal_scope = ["[https://graph.microsoft.com/.default](https://graph.microsoft.com/.default)"]
+msal_authority = f"https://login.microsoftonline.com/{tenant_id}"
+msal_scope = ["https://graph.microsoft.com/.default"]
 
 msal_app = ConfidentialClientApplication(
     client_id=client_id,
@@ -79,17 +79,18 @@ def update_headers(current_msal_app, current_msal_scope):
         error_description = result.get("error_description", "No error description provided.")
         print(f"Error acquiring token: {error_description}")
         raise Exception("No Access Token found or error in acquiring token.")
-
-# Get initial headers
 headers = update_headers(msal_app, msal_scope)
-# print(f"Initial headers obtained at: {time.strftime('%X %x %Z')}") # 
+```
 
 The update_headers function handles token acquisition.
 
-##Part 2: Fetching All Microsoft Teams
+
+
+### Part 2: Fetching All Microsoft Teams
 Teams are Microsoft 365 Groups with a 'Team' resource. We query the Graph API for these groups.
 
-teams_url = "[https://graph.microsoft.com/v1.0/groups?$filter=resourceProvisioningOptions/Any(x:x](https://graph.microsoft.com/v1.0/groups?$filter=resourceProvisioningOptions/Any(x:x) eq 'Team')&$select=id,displayName"
+```python
+teams_url = "https://graph.microsoft.com/v1.0/groups?$filter=resourceProvisioningOptions/Any(x:x eq 'Team')&$select=id,displayName"
 
 print("\nFetching list of all Teams...")
 start_fetch_teams_time = time.time()
@@ -118,40 +119,12 @@ print(f"Time to fetch Teams list: {elapsed_fetch_teams_time:.2f} seconds")
 
 team_ids_list = df_unique_teams['id'].tolist()
 team_names_list = df_unique_teams['displayName'].tolist()
+```
 
-teams_url = "[https://graph.microsoft.com/v1.0/groups?$filter=resourceProvisioningOptions/Any(x:x](https://graph.microsoft.com/v1.0/groups?$filter=resourceProvisioningOptions/Any(x:x) eq 'Team')&$select=id,displayName"
-
-print("\nFetching list of all Teams...")
-start_fetch_teams_time = time.time()
-
-all_teams_list = []
-current_url = teams_url
-
-while current_url:
-    response = requests.get(current_url, headers=headers)
-    response.raise_for_status() 
-    teams_data = response.json()
-    
-    all_teams_list.extend(teams_data['value'])
-    current_url = teams_data.get('@odata.nextLink', None) 
-    # if current_url: # Optional logging
-    #     print(f"Fetching next page of teams...")
-
-df_teams = pd.DataFrame(all_teams_list)
-df_unique_teams = df_teams.drop_duplicates(subset=['id'], keep='first')
-
-end_fetch_teams_time = time.time()
-elapsed_fetch_teams_time = end_fetch_teams_time - start_fetch_teams_time
-
-print(f"\nFound {df_unique_teams.shape[0]} unique Teams.")
-print(f"Time to fetch Teams list: {elapsed_fetch_teams_time:.2f} seconds")
-
-team_ids_list = df_unique_teams['id'].tolist()
-team_names_list = df_unique_teams['displayName'].tolist()
-
-Part 3: Fetching Drive Storage (Synchronous Method)
+## Part 3: Fetching Drive Storage (Synchronous Method)
 This initial approach fetches storage information for each Team sequentially. It can be slow for many teams.
 
+```python
 print("\nFetching drive storage for each team (Synchronous approach)...")
 sync_start_time = time.time()
 
@@ -163,7 +136,7 @@ for i, teamid in enumerate(team_ids_list):
     if i > 0 and i % 50 == 0: # Progress indicator, skip first
         print(f"Processing team {i+1}/{len(team_ids_list)}: {team_names_list[i]}")
     
-    drive_url = f'[https://graph.microsoft.com/v1.0/groups/](https://graph.microsoft.com/v1.0/groups/){teamid}/drive'
+    drive_url = f'https://graph.microsoft.com/v1.0/groups/{teamid}/drive'
     
     try:
         response = requests.get(drive_url, headers=headers)
@@ -194,9 +167,11 @@ sync_end_time = time.time()
 sync_elapsed_time = sync_end_time - sync_start_time
 print(f"Execution time for synchronous drive fetching: {sync_elapsed_time:.2f} seconds")
 # print(space_teams_sync_df.head() if not space_teams_sync_df.empty else "No sync data to show.")
+```
 
-Part 4: Asynchronous Data Fetching with aiohttp
+## Part 4: Asynchronous Data Fetching with aiohttp
 To improve performance, we use aiohttp and asyncio for concurrent API calls.
+```python
 import asyncio
 import aiohttp
 import nest_asyncio 
@@ -205,7 +180,7 @@ nest_asyncio.apply()
 
 async def fetch_drive_async(session, teamid, team_name, auth_headers):
     """Asynchronously fetches drive information for a single team."""
-    drive_url = f'[https://graph.microsoft.com/v1.0/groups/](https://graph.microsoft.com/v1.0/groups/){teamid}/drive'
+    drive_url = f'https://graph.microsoft.com/v1.0/groups/{teamid}/drive'
     try:
         async with session.get(drive_url, headers=auth_headers) as response:
             if response.status == 200:
@@ -261,3 +236,4 @@ async_elapsed_time = async_end_time - async_start_time
 print(f"\nAsynchronous fetching complete.")
 print(f"Execution time for asynchronous drive fetching: {async_elapsed_time:.2f} seconds")
 # print(space_teams_async_df.head() if not space_teams_async_df.empty else "No async data to show.")
+```
