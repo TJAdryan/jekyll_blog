@@ -32,7 +32,7 @@ Before starting, ensure you have the following:
 
 ### Part 1: Authentication with MSAL
 
-We use the Microsoft Authentication Library (MSAL) for Python to obtain an access token for the Graph API.
+We use the Microsoft Authentication Library (MSAL) for Python to obtain an access token for the Graph API. The token is good for an hour. Plenty of time for what we are doing here. I like to put into function anyway, you don't know when you will need it again.  Which is the whole point of functions, right?
 
 ```python
 import json
