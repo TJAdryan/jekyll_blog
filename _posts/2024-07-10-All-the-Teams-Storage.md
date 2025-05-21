@@ -5,7 +5,9 @@ categories: [Development, Administration]
 tags: [python, microsoft-graph, teams, admin]
 ---
 
-I usually have a hard time learning something when the information is completely abstract I much prefer a practical application, but many times I have had to help identify who is over consuming resources. But I don't want to expose the internal workings of any of my clients.  In this case we are going to use the example of a school. We are  going to compare synchronous and async code in the Microsoft Graph API to get a list of all the teams in my organization and then get the storage usage for each team.
+I usually have a hard time learning something when the information is completely abstract I much prefer a practical application. I don't want to expose the internal workings of any of my clients. So this is something I have run, with 'fictitious' data. In this case we are going to use the example of a school. We'll compare synchronous and async code in the Microsoft Graph API to get a list of all the teams in the organization and then get the storage usage for each team.  The school has run out out of data and needs to find out how much space is being used by each team.
+
+
 
 ## Prerequisites
 
@@ -121,7 +123,7 @@ team_ids_list = df_unique_teams['id'].tolist()
 team_names_list = df_unique_teams['displayName'].tolist()
 ```
 
-After running this code, you'll get a list of teams like this:
+After running this code, you'll get a list of teams like this, we really only need the id, but the displayName is nice to have and shows us right away that one of the names is repeated, but has a different id.  This is a good example of why you should always check for duplicates when working with data.  Seems like a strong hint, but I think we all already know who is responsible::
 ```python
 # Example of teams data from Graph API:
 [
@@ -173,7 +175,7 @@ for i, teamid in enumerate(team_ids_list):
     # time.sleep(0.05) # Optional small delay for very basic throttling avoidance
 
 if all_teams_drive_data_sync:
-    space_teams_sync_df = pd.concat(all_teams_drive_data_sync, ignore_index=True)
+    space_teams_sync_df = pd.coI didn't dive into thencat(all_teams_drive_data_sync, ignore_index=True)
     print(f"\nSynchronous fetching processed {len(space_teams_sync_df)} team drives.")
 else:
     print("\nNo drive data fetched synchronously.")
@@ -264,4 +266,5 @@ Asynchronous fetching complete.
 Data shape: (535, 10)
 Execution time for asynchronous drive fetching: 2.94 seconds
 
-So there you go, the async approach returns the same data, just more than 60 times faster.  We didn't dive into the data this time, so I will tell you it was the Library that was using the most space.  I almost feel bad for thinking it was Slytetherin, but I always felt that reputation was earned.  
+So there you go, the async approach returns the same data, just more than 60 times faster.  We didn't dive into the data this time, so I will tell you it was the Library that was using the most space.  I almost feel bad for thinking it was Slytetherin, lazy thinking on my part.   
+
