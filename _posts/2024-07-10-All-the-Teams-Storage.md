@@ -87,7 +87,7 @@ The update_headers function handles token acquisition.
 
 
 ### Part 2: Fetching All Microsoft Teams
-Teams are Microsoft 365 Groups with a 'Team' resource. We query the Graph API for these groups.
+Teams are Microsoft 365 Groups with a 'Team' resource. We query the Graph API for these groups. We will run this synchonously it returs the list relatively quickly in about 3 seconds.
 
 ```python
 teams_url = "https://graph.microsoft.com/v1.0/groups?$filter=resourceProvisioningOptions/Any(x:x eq 'Team')&$select=id,displayName"
@@ -121,6 +121,22 @@ team_ids_list = df_unique_teams['id'].tolist()
 team_names_list = df_unique_teams['displayName'].tolist()
 ```
 
+After running this code, you'll get a list of teams like this:
+```python
+# Example of teams data from Graph API:
+[
+    {'id': '87w3uhq2ev99r123o5mwi55s6nqp2bk4zlwf', 'displayName': 'Shell Cottage'},
+    {'id': 'qq9dqz35wgdq8yqjrn5wt4sqzzgpuihbbvas', 'displayName': 'The Gryffindor Common Room'},
+    {'id': 'ly09hvq87rvxh0n1rxh83d2vnaraqy7zpxuu', 'displayName': 'Hufflepuff House'},
+    {'id': '38tcpukusneqdhnwconcflwt2dqsgiobrbj4', 'displayName': 'The Black Lake'},
+    {'id': 'tsafap1hyai38knuc3p8sgmzafdt7pqq1o9u', 'displayName': 'The Dungeons'},
+    {'id': 'z98u31nua35b499cbqi8hy3gzyytad4z9mxb', 'displayName': 'The Library'},
+    {'id': 's50u5ipnrukdp4pnrgk0g1fk4bpq0mzkpmms', 'displayName': 'Azkaban Prison'},
+    {'id': 'dsos1aq9517gwnavr0c8miz5xrzhc9iq4jce', 'displayName': 'The Library'},
+    {'id': 'usrpwr65bj18zmrk8hqqmyaryglyop8dh0x6', 'displayName': 'The Hufflepuff Common Room'},
+    {'id': 'no12n4fddxtoq5sddz7c0ej0q35nctjreyv7', 'displayName': "St. Mungo's Hospital"}
+]
+```
 ## Part 3: Fetching Drive Storage (Synchronous Method)
 This initial approach fetches storage information for each Team sequentially. It can be slow for many teams.
 
@@ -237,3 +253,15 @@ print(f"\nAsynchronous fetching complete.")
 print(f"Execution time for asynchronous drive fetching: {async_elapsed_time:.2f} seconds")
 # print(space_teams_async_df.head() if not space_teams_async_df.empty else "No async data to show.")
 ```
+
+# Synchronous approach results:
+Synchronous fetching processed 535 team drives.
+Data shape: (535, 10)
+Execution time for synchronous drive fetching: 186.42 seconds
+
+# Asynchronous approach results:
+Asynchronous fetching complete.
+Data shape: (535, 10)
+Execution time for asynchronous drive fetching: 2.94 seconds
+
+So there you go, the async approach returns the same data, just more than 60 times faster.  We didn't dive into the data this time, so I will tell you it was the Library that was using the most space.  I almost feel bad for thinking it was Slytetherin, but I always felt that reputation was earned.  
