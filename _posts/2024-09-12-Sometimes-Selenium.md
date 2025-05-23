@@ -1,17 +1,25 @@
-Quick Intro: Web Automation with Selenium
+---
+title: "Sometimes Selenium Works Best: Web Automation in Python"
+date: 2024-09-12 12:00:00 -0400
+categories: [Development, Automation]
+tags: [python, selenium, web-scraping, automation, chromedriver]
+---
+
+# Quick Intro: Web Automation with Selenium
 It took me a while before I was able to interact with the pop-up on the website I was trying to scrape. II know people swear by Playwright, but I feel like Selenium was just there for me when I needed it. 
-Why Selenium?
+## Why Selenium?
 It's invaluable for:
 
-Automated testing of web applications.
+- Automated testing of web applications.
 
-Web scraping when data isn't easily accessible via APIs.Or when the API is unfriendly.
+- Web scraping when data isn't easily accessible via APIs.Or when the API is unfriendly.
 
-Automating repetitive web-based tasks.
+- Automating repetitive web-based tasks.
 
 
 The Python code below sets up Selenium and defines a simple function. This function attempts to find and click a specific button (perhaps to close a pop-up or acknowledge a message) on a webpage, and then closes the browser.
 
+```python
 import selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -50,3 +58,4 @@ def remove_popup_and_quit(driver_instance):
 # 1. Initialize your driver: driver = webdriver.Chrome()
 # 2. Navigate to a page: driver.get("https://example.com")
 # 3. Call the function: remove_popup_and_quit(driver)
+```
