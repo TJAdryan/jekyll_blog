@@ -6,7 +6,7 @@ permalink: /more-about-me/
 
 **Less formal Stuff:**
 
-I started this blog for a couple of reasons. Firstly, I genuinely believe in sharing knowledge, but let's face it, we forget most of what we learn, documenting it won't prevent that but it helps.  Secondly, I wanted a space to explore data engineering and related topics with a bit more personality – maybe even *fun*, ~~probably~~ hopefully. Finally, I can't resist a good anecdote, so I won't promise this will be 100% technical content.   
+I started this blog for a couple of reasons. Firstly, I genuinely believe in sharing knowledge, but let's face it, we forget most of what we learn, documenting it won't prevent that but it helps.  Secondly, I wanted a space to explore data engineering and related topics with a bit more personality – maybe even *fun*, ~~probably~~ hopefully. Finally, I can't resist a good anecdote, so this will never be 100% technical content.   
 
 
 Data is an incredibly broad and complex field, I am sure many of you have had the same experience of realizing there are too many things for one person to know. My goal here isn't just to present dry technical facts but to share the *how* and the *why*, we all want to have perfect projects that perform flawlessly but that isn't true for most of us.  
