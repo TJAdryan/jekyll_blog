@@ -7,7 +7,7 @@ tags: [python, uv, dependency-management, pip, package-manager, rust]
 
 # The Effective and Unobtrusive 'uv' Python Package Manager
 
-I really like 'uv'. I know controversial opinions, but I am not afraid of what the bureaucrats in city hall will say. I never really felt like dependencies took too long to download. But when I saw uv in action, I mourned the collective hours of all the python users who had the misfortune of coding before 'uv', a new, blazing-fast Python package installer and resolver from Astral, the creators of the Ruff linter. It's designed to be a drop-in replacement for common pip and pip-tools workflows, but significantly faster.
+I really like 'uv'. I know controversial opinion, but I am not afraid of what the bureaucrats in city hall will say. I never really felt like dependencies took too long to download. But when I saw uv in action, I mourned the collective hours of all the python users who had the misfortune of coding before 'uv', a new, blazing-fast Python package installer and resolver from Astral, the creators of the Ruff linter. It's designed to be a drop-in replacement for common pip and pip-tools workflows, but significantly faster.
 
 ## Why is uv a Big Deal?
 
