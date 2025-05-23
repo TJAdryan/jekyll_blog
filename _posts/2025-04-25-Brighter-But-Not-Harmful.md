@@ -1,10 +1,10 @@
-
 ---
 title: "Brighter But Not Harmful: The 'uv' Python Installer"
 date: 2025-04-25 12:00:00 -0400
 categories: [Development, Python]
 tags: [python, uv, dependency-management, pip, package-manager, rust]
 ---
+
 
 # The Effective and Unobtrusive 'uv' Python Package Manager
 
