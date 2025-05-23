@@ -16,7 +16,11 @@ Data is an incredibly broad and complex field, I am sure many of you have had th
 I love New York City where I work and live and enjoy a bit of everything it has to offer. I have a distrust for automobiles, but when I do drive, I get the appeal. Maybe it is just the metaphor of spending all your time in a box, maybe it was reading [The Power Broker by Robert Caro](https://www.amazon.com/Power-Broker-Robert-Moses-Fall/dp/0394720245) at an impressionable time in my life. Like many people, my contradictions probably say as much about me as my convictions. I love reading and there are just too many good books and not nearly enough time.  
 
 **Tell me stuff:**
-
+title: NextVal Data
+tagline: Data Engineering and Python
+description: Dominick's blog about data engineering and Python
+url: 'https://nextvaldata.com'
+avatar: '/assets/img/avatar.jpg' # Add your own avatar image
 I'm always keen to connect with fellow data enthusiasts! Feel free to reach out, I love a good story and I feel like most people have one or more to tell. I appreciate all feedback, I promise to read it all.
 
 * Dominick
