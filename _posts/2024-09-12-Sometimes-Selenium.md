@@ -6,7 +6,7 @@ tags: [python, selenium, web-scraping, automation, chromedriver]
 ---
 
 # Quick Intro: Web Automation with Selenium
-It took me a while before I was able to interact with the pop-up on the website I was trying to scrape. II know people swear by Playwright, but I feel like Selenium was just there for me when I needed it. 
+It took me a while before I was able to interact with the pop-up on the website I was trying to scrape. I know people swear by Playwright, but I feel like Selenium was just there for me when I needed it. 
 ## Why Selenium?
 It's invaluable for:
 
