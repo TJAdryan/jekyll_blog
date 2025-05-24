@@ -5,7 +5,7 @@ categories: [Technology, Science]
 tags: [CRISPR, Gene Editing, Biotechnology, Health, python]
 ---
 
-# The Fairytale of CRISPR: Long Ago and Far Away a Young Prokaryote...
+# Sort of a fairytale...
 Almost everything about CRISPR sounds like a fairytale. The first living organisms, are attacked by viruses with no way to defend themselves. Some evolve an ability that allows them to snip the RNA out of the virus and hold on to it as a protection in case they are ever attacked by the same virus. Thousands of years later, humans learn this secret and figure out how to use it save the lives of other humans.
 
 This week I read that a [child](https://www.nytimes.com/2025/05/15/health/gene-editing-personalized-rare-disorders.html) that had virtually no chance of survival, seems to have been saved by this technology. They call the kid KJ, and if it worked for him they might be able to save thousands or even millions of other lives. The speficific disease is called [AADC deficiency](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10000000/) and it is a rare genetic disorder that affects the brain's ability to produce dopamine and serotonin. But there is good reason to believe the same techniques could be used to treat other diseases as well.
