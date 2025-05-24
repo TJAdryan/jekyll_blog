@@ -4,6 +4,7 @@ title:  More About Dominick
 permalink: /more-about-me/
 ---
 **The triva or trivial stuff:**
+
 Why nextvaldata? The name is from the SQL function `nextval()`, maybe it is a case of just hearing something a lot but I thought it has a nice ring to it and sounds forward thinking. 
 
 
