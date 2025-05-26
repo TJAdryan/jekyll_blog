@@ -140,7 +140,7 @@ After running this code, you'll get a list of teams like this, we really only ne
 ]
 ```
 ## Part 3: Fetching Drive Storage (Synchronous Method)
-This initial approach fetches storage information for each Team sequentially. It can be slow for many teams.
+This initial approach fetches storage information for each Team sequentially. It can be slow, especially if you have a large number of teams.  
 
 ```python
 print("\nFetching drive storage for each team (Synchronous approach)...")
@@ -266,5 +266,5 @@ Asynchronous fetching complete.
 Data shape: (535, 10)
 Execution time for asynchronous drive fetching: 2.94 seconds
 
-So there you go, the async approach returns the same data, just more than 60 times faster.  We didn't dive into the data this time, so I will tell you it was the Library that was using the most space.  I almost feel bad for thinking it was Slytetherin, lazy thinking on my part.   
+So there you go, the async approach returns the same data, just more than 60 times faster.  We didn't dive into the data this time, so I will tell you it was the Library that was using the most space.  I almost feel bad for thinking it was Slytetherin, lazy thinking on my part.    
 
