@@ -189,6 +189,8 @@ print(f"Execution time for synchronous drive fetching: {sync_elapsed_time:.2f} s
 
 ## Part 4: Asynchronous Data Fetching with aiohttp
 To improve performance, we use aiohttp and asyncio for concurrent API calls.
+nest_asyncio is only neccesary if you are running this in a jupyter notebook. 
+You might not even need this if you are running jupyter 7.  
 ```python
 import asyncio
 import aiohttp
