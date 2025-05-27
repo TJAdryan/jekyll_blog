@@ -26,7 +26,7 @@ Before starting, ensure you have the following:
         * `Group.Read.All` (to list Teams)
         * `Sites.Read.All` (to access drive storage information)
 
-**Security Note:** Securely manage your `client_secret`. Avoid hardcoding it in scripts for production environments. Consider using environment variables or a service like Azure Key Vault.
+**Security Note:** Securely manage your `client_secret`. Avoid hardcoding it in scripts for production environments. Consider using an environment variable.
 
 ## Python Script Walkthrough
 
