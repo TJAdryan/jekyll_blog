@@ -6,7 +6,7 @@ tags: [CRISPR, Gene Editing, Biotechnology, Health, python]
 ---
 
 # Sort of a fairytale...
-Almost everything about CRISPR sounds like a fairytale.  Some of the first living organisms, are attacked by viruses with no way to defend themselves. Some evolve an ability that allows them to snip the RNA out of the virus and hold on to it protecting themselves from future attacks. Thousands of years later, humans learn this secret and figure out how to use it save the lives of other humans.
+Almost everything about CRISPR sounds like a magical.  Some of the first living organisms, are attacked by viruses with no way to defend themselves. Some evolve an ability that allows them to snip the RNA out of the virus and hold on to it protecting themselves from future attacks. Thousands of years later, humans learn this secret and figure out how to use it save the lives of other humans.
 
 <div style="text-align: center;">
   <img src="/assets/img/2025-05-15-Sometimes-Good/legendcrispr.png" alt="Legend of CRISPR image" width="25%">
