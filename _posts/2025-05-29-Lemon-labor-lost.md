@@ -1,12 +1,9 @@
-<div style="text-align: center;">
+<figure style="text-align: center;">
   <div style="width: 400px; height: 300px; overflow: hidden; position: relative;">
-    <img src="/assets/img/lemon-hamlet.png" alt="Alas Horatio" style="position: absolute; top: 0; left: 0; transform: scale(0.5); transform-origin: top left;">
+    <img src="/assets/img/lemon-hamlet.png" alt="Alas " style="position: absolute; top: 0; left: 0; transform: scale(0.5); transform-origin: top left;">
   </div>
-</div>
-
-
-
-
+  <figcaption style="font-size: smaller; color: gray;">But soft, methinks I scent a lemon cookie .</figcaption>
+</figure>
 
 For weeks now, I've been on a quiet, personal quest: the search for the perfect lemon cookie. It's not some grand, dramatic saga; it's just a simple desire to find that one, truly sublime cookie that delivers a bright, zesty, and utterly satisfying lemon experience. No, I don't know what is wrong with me.  I just want what I want. 
 
