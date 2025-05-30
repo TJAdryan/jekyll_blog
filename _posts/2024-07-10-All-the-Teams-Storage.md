@@ -26,7 +26,7 @@ Before starting, ensure you have the following:
         * `Group.Read.All` (to list Teams)
         * `Sites.Read.All` (to access drive storage information)
 
-**Security Note:** Securely manage your `client_secret`. Avoid hardcoding it in scripts for production environments. Consider using environment variables or a service like Azure Key Vault.
+**Security Note:** Securely manage your `client_secret`. Avoid hardcoding it in scripts for production environments. Consider using an environment variable.
 
 ## Python Script Walkthrough
 
@@ -189,6 +189,8 @@ print(f"Execution time for synchronous drive fetching: {sync_elapsed_time:.2f} s
 
 ## Part 4: Asynchronous Data Fetching with aiohttp
 To improve performance, we use aiohttp and asyncio for concurrent API calls.
+nest_asyncio is only neccesary if you are running this in a jupyter notebook. 
+You might not even need this if you are running jupyter 7.  
 ```python
 import asyncio
 import aiohttp
