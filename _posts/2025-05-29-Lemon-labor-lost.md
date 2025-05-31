@@ -14,4 +14,4 @@ I opened the package on the walk home. The cookie part had no lemon flavor, it w
 
 
 I don't know what specific lemon cookie from my past set this high, yet seemingly unachievable, bar. But its memory drives my continued search. It might be that I am nostalgic or have unrealistic expections.  Anyway if anyone knows of lemon cookie they really enjoy I'd love to hear about it. 
-There are some lemon cookies I like like these[are great](https://www.tatesbakeshop.com/cookies/flavors/new-lemon-cookies) but they don't have any icing.
+There are some lemon cookies I like.  These [are great](https://www.tatesbakeshop.com/cookies/flavors/new-lemon-cookies) but they don't have any icing.
