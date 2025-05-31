@@ -5,7 +5,7 @@ categories: [Food, Personal]
 tags: [lemon cookies, food review, maximizer, satisficer]
 ---
 
-# Lemon Labor Lost: A Quest for the Perfect Cookie
+
 
 <figure style="text-align: center;">
   <img src="/assets/img/lemon-hamlet.png" alt="Twas but a cookie, with lemon" style="width: 400px; height: auto;">
