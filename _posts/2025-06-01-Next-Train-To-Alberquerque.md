@@ -1,4 +1,9 @@
-Never Miss Your Train Again: Track NYC Subway Arrivals in Real-Time with Python
+---
+title: "Next Train to Alberquerque: Track NYC Subway Arrivals in Real-Time with Python"
+date: 2025-06-01 12:00:00 -0400
+categories: [Data Engineering, Python]
+tags: [MTA, subway, GTFS-Realtime, Python, data]
+---
 
 Tired of anxiously peering down a dark subway tunnel, wondering when your train will actually arrive, or opening an app that asks you to scroll through every line to find the one you need?
 
