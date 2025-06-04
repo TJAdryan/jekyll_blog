@@ -14,7 +14,7 @@ tags: [MTA, subway, GTFS-Realtime, Python, data]
 
 Tired of anxiously peering down a dark subway tunnel, wondering when your train will actually arrive, or opening an app that asks you to scroll through every line to find the one you need?
 
-With a bit of Python and access to the MTA's live data, you can build your own simple subway arrival tracker.  I have heard of some nice projects that people have used to keep a little sign in their apartment that tells them when the next train is coming.  If you are instested in that, this will help get you started.
+With a bit of Python and access to the MTA's live data, you can build your own simple subway arrival tracker.  I have heard of some nice projects that people have used to keep a little sign in their apartment that tells them when the next train is coming.  If you are instested in that, this will help get you started.  The MTA used to require an API key for accessing their real-time data, but now you can access it freely. Which is exactly one less thnig you need to worry about. 
 
 This post will guide you through:
 
