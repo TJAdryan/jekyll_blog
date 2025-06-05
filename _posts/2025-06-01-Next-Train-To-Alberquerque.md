@@ -46,7 +46,7 @@ The Metropolitan Transportation Authority (MTA) generously provides real-time da
 
 This data is typically provided in a compact format called Protocol Buffers, which is where our gtfs-realtime-bindings library comes in handy to parse it.
 
-The MTA has different feeds for different sets of subway lines. For our main example, we'll use the feed for the N, Q, R, W lines, but I'll show you how to find others. The great news? You no longer need an API key for these public feeds!
+The MTA has different feeds for different sets of subway lines. For our main example, we'll use the feed for the N, Q, R, W lines, but I'll show you how to find others. 
 
 ## The python script
 
