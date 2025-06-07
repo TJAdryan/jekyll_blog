@@ -2,7 +2,7 @@
 title: "DuckDB - Diners, Drives, and Databases"
 date: 2025-06-06
 categories: [Data Engineering, Python]
-tags: [DuckDB, Pandas, data analysis, SQL, Python]
+tags: [DuckDB, Pandas, data analysis, SQL, Python, testing]
 ---
 <img src="/assets/img/duckdbgf2.png" alt="All paws on Deck" width="400px" height="auto">
 
