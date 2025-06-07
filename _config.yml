@@ -31,7 +31,8 @@ social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
   name: Dominick Ryan
-  email: dominick@nextvaldata.com # change to your email address
+  email: dominick@nextvaldata.com # change to your email address 1
+  
   links:
     # The first element serves as the copyright owner's link
     - https://github.com/tjadryan # change to your GitHub homepage
