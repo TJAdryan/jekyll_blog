@@ -28,3 +28,6 @@ I really like 'uv'. I know controversial opinion, but I am not afraid of what th
 - `uv venv`: Create virtual environments quickly.
 
 Sometimes you think the world is going in the wrong direction. And then you see something like uv and you think, maybe it is not so bad after all.
+
+Here are the docs if you want to learn more: [uv docs](https://astral.sh/uv/).
+
