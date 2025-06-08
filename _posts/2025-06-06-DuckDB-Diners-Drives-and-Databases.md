@@ -1,5 +1,5 @@
 ---
-title: "DuckDB - Diners, Drives, and Databases"
+title: "DuckDB - Diners, Drives, and Databases Part I"
 date: 2025-06-06
 categories: [Data Engineering, Python]
 tags: [DuckDB, Pandas, data analysis, SQL, Python, testing]
@@ -8,9 +8,10 @@ tags: [DuckDB, Pandas, data analysis, SQL, Python, testing]
 
 <p style="font-size:0.9em; margin-top:0.5em; color:#555;"><em>Hoping for an A.</em></p>
 
+Pandas has been my go-to tool for data manipulation in Python for years. So great for me, right?  End of blog post.  Except... 
 “If the only tool you have is a hammer, you will see every problem as a nail.” This dollop of wisdom, often attributed to Maslow, reminds us that the solutions we find are often shaped by the tools we have available. I’m not calling Pandas a hammer; it’s an incredible combination of tools that has truly changed how millions of people, myself included, get work done. My point is simply this: opening yourself up to different solutions can lead you to achieve different—and hopefully better—results.
 
-That’s precisely where DuckDB shines. I’ve been using it in my own data pipelines to speed up transformations and prep reports for joining with other databases. And honestly? I know I’m only scratching the surface of its possibilities. So, I figured, why not explore it together? Maybe you’ll find a new go-to solution for your own data challenges, and perhaps this exploration will prove useful to others too.
+That’s precisely where DuckDB shines. I’ve been using it in my own data pipelines to speed up transformations and prep reports for joining with other databases. And honestly? I know I’m only scratching the surface of its possibilities. So I thought I would try a few simple jobs with DuckDB, and maybe this exploration will prove useful to others too.
 
 If you’ve been coding in Python for a while, you’re likely familiar with traditional database solutions like PostgreSQL or SQLite. DuckDB stands out from the crowd because it offers **virtually no setup**, delivers **blazing-fast performance**, and can directly pull entire datasets from a **multitude of formats**.
 
