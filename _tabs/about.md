@@ -14,7 +14,7 @@ order: 4
 
     Whether I'm building out ETL/ELT pipelines, setting up data warehouses or data lakes, or even diving into the data from that classic 'keyring of thumb drives someone found in a drawer,' my aim is to make sure data is useful. One of the most important steps in making this happen, is understanding what colleagues and stakeholders need from these solutions. Or as I like to say, "Let's make it nice for the people."  
 
-    Currently I am working as a Senior Engineer, developing API integrations, automating reporting and configuring and deploying cloud services."</p>
+    Currently I am working as a Senior Engineer, developing API integrations, automating reporting and configuring and deploying cloud services.</p>
   </div>
 </div>
 
