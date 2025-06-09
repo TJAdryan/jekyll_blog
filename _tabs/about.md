@@ -9,11 +9,12 @@ order: 4
     <img src="/assets/img/about/profileme.jpg" alt="Dominick Ryan" class="no-popup" style="width: 100%; border-radius: 50%;">
   </div>
   <div>
-    <p>Hey there, welcome to NextValData! I'm Dominick, and this is my blog. I love data, and learning new things and new ways of looking at world.</p>
-    <p>Professionally, I am working as a Senior Engineer, developing API integrations, automating reporting and configuring and deploying cloud services. I'm lucky to be on a team with awesome and dedicated people, where we create solutions for a whole range of SaaS,PaaS and legacy system challenges. Day-to-day, I get to use a lot of great technology like Python, SQL, Spark, and Airflow, sometimes on cloud platforms like GCP, Azure, and AWS.  
+    <p>Hey there, welcome to NextValData! I'm Dominick, and this is my blog. I'm passionate about data and exploring new perspectives.</p>
 
-    Whether I'm building out ETL/ELT pipelines, setting up data warehouses or data lakes, or even diving into the data from that classic 'keyring of thumb drives someone found in a drawer,' my aim is to make sure data is useful. One of the most important steps in making this happen, is understanding what colleagues and stakeholders need from these solutions. Or as I like to say, "Let's make it nice for the people."  
+    <p>Professionally, I'm a Senior Engineer specializing in API integrations, automated reporting, and cloud service deployment. I collaborate with a talented team to create solutions for diverse SaaS, PaaS, and legacy system challenges. My daily toolkit includes Python, SQL, Spark, and Airflow, often within cloud environments like GCP, Azure, and AWS.</p>
 
+    <p>My goal is to ensure data is useful, whether I'm building ETL/ELT pipelines, setting up data warehouses or data lakes, or analyzing data from unconventional sources. Understanding the needs of colleagues and stakeholders is crucial. As I like to say, "Let's make it nice for the people."</p>
+  </div>
 </div>
 
 <div class="text-center mt-4">
