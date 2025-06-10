@@ -7,6 +7,8 @@ tags: [python, google-drive, backup, sql, automation]
 
 Protecting your data is crucial, and having automated backups is a cornerstone of any robust data strategy. In this post, I'll walk you through a Python script that automatically backs up your SQL database (in `.gz` format) to Google Drive. This ensures your backups are stored securely offsite and are easily accessible when needed.  As always there are a lot of cateats to consider, like over using your Google Drive storage quota, in this case my total backups are less than 1GB.  A service like [rclone](https://rclone.org/) can you help you manage your backups with Google Drive and other cloud stoarge providers. without having to write your own code. This is a longer process and it involves running a cron job to fully automate. 
 
+I usually advocate for the simple and straightforward approach, but in this case, I think there is value in scripting the process.  Both for learning and flexibility. There are a lot of great tools for backing up your files, but they are often a lot more than we need.
+
 
 ## Why Automate Backups to Google Drive?
 
