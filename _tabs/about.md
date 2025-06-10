@@ -9,7 +9,7 @@ order: 4
     <img src="/assets/img/about/profileme.jpg" alt="Dominick Ryan" class="no-popup" style="width: 100%; border-radius: 50%;">
   </div>
   <div>
-    <p>Hey there, welcome to NextValData! I'm Dominick, and this is my blog. I love data, and learning new things and new ways of looking at the world.</p>
+    <p>Hey there, welcome to NextValData! I'm Dominick, and this is my personal blog. I love data, and learning new things and new ways of looking at the world.</p>
 
     <p>Professionally, I am working as a Senior Engineer, developing API integrations, automating reporting, and configuring and deploying cloud services. I'm lucky to be on a team with awesome and dedicated people, where we create solutions for a whole range of SaaS, PaaS, and legacy system challenges. Day-to-day, I get to use a lot of great technology like Python, SQL, Spark, and Airflow, sometimes on cloud platforms like GCP, Azure, and AWS.</p>
 
