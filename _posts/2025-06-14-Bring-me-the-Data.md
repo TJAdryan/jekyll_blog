@@ -11,9 +11,12 @@ tags: [API, Pandas, data analysis, Python, testing]
 
 ## NYC Restaurant Inspections Data Pull
 
-When I was making the [DuckDB posts]({% post_url 2025-06-08-DuckDB-Diners-Drives-and-Databases-PartII %}), I wanted to include some code to show how to pull the data from the NYC Open Data portal. I was afraid it was getting too long and wanted to make it simple. Here's a separate post that provides a simple way to pull the data programmatically.
+When I was making the [DuckDB posts]({% post_url 2025-06-08-DuckDB-Diners-Drives-and-Databases-PartII %}), I wanted to include some code to show how to pull the data from the NYC Open Data portal. In the interest of keeping it simple, I just showed how to download the data.  Here's a separate post that provides a simple way to pull the data programmatically, if you haven't accessed the NYC Open Data portal before, this is a great way to get started and can easily be adpated to the many other datasets available there.
 
-This post is available as code on [GitHub](https://github.com/TJAdryan/nyc-restaurant-inspections). This post is adapted from the readme.
+It is great for practice and to help develop your skills to automate a small call everyday.  To further challenge yourself, you can see how try to see how many days in a row you can pull the data, or to script out jobs to find if there are missing days in your code.  I would say if you come accross an issue and you are not sure what to do, it is probably an issue people who work in data engineering face too.  There is a lot of help out and reccomendations of best policy, but no one has all the answers.  So be humble, but by no means be humbled. 
+
+
+This post is available as code on [GitHub](https://github.com/TJAdryan/nyc-restaurant-inspections) and is adapted from the readme.
 
 ## Getting Started
 
@@ -71,7 +74,7 @@ Once you have installed the dependencies and set up your .env file, you can run 
 python pull_data.py
 ````
 
-The script will print progress messages to your console, and once complete, it will save the retrieved restaurant inspection data as CSV and Parquet files in the same directory.
+The script will print progress messages to your console, and once complete, it will save the retrieved restaurant inspection data as CSV and Parquet files in the same directory.  
 
 ## Code Overview
 
