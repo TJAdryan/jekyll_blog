@@ -27,9 +27,6 @@ To get the data, just click the ‘Actions’ button in the top right corner on 
 
 ---
 
-For our purpose here, we’re simply focused on seeing what’s truly possible with DuckDB.
-
----
 
 ### Optional but Recommended: Simplify Your File Path
 
