@@ -12,8 +12,9 @@ tags: [DuckDB, Pandas, data analysis, SQL, Python, testing]
 
 <p style="font-size:0.9em; margin-top:0.5em; color:#555;"><em>Hoping for an A.</em></p>
 
-DuckDB - Diners, Drives, and Databases: Part II - Transforming, Storing, and Typing Your Data  
-Welcome back to our exploration of DuckDB! In Part I, we got our feet wet by performing initial data explorations on the NYC restaurant inspection dataset directly from a CSV file. We saw how DuckDB allows for quick insights without full data loading into memory.
+
+
+ In [Part I]({% post_url 2025-06-01-DuckDB-Diners-Drives-and-Databases-PartI %}), , we got our feet wet by performing initial data explorations on the NYC restaurant inspection dataset directly from a CSV file. We saw how DuckDB allows for quick insights without full data loading into memory.
 
 I felt like I didn't get to cover everything I wanted to touch in the last post so here I will focus on some of the other capabilities namely as a lightweight, in-process ETL (Extract, Transform, Load) tool.
 
