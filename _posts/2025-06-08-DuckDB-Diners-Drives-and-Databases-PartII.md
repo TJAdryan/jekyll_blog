@@ -160,7 +160,7 @@ except Exception as e:
 finally:
     con.close()
 ```
-You should see some pretty amazing space savings.  Here are my results more than a 30% savings from the original CSV to the transformed CSV, and then over 90% savings when compressing to GZIP and converting to Parquet. More than 15X reduction,  saving in the right format means you can keep a year worth of data in the space you would have used for a single month in the original CSV format.
+You should see some pretty amazing space savings.  Here are my results more than a 30% savings from the original CSV to the transformed CSV, and then over 90% savings when compressing to GZIP and converting to Parquet. More than 15X reduction, saving in the right format means you can keep a year worth of data in the space you would have used for a single month in the original CSV format.
 
 ```
 --- Comparing File Sizes ---
