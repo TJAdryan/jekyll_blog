@@ -1,5 +1,5 @@
 ---
-title: "Building Data Pipelines with Dagster: A Practical Guide"
+title: "Building Data Pipelines with Dagster: Practical"
 date: 2025-06-29
 categories: [Data Engineering, Python, Orchestration]
 tags: [Dagster, data pipelines, Python, orchestration, data engineering]
