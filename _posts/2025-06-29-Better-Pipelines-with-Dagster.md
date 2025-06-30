@@ -8,7 +8,7 @@ tags: [Dagster, data pipelines, Python, orchestration, data engineering]
 I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far.  I am definitely planning on diving further into it in the future but my initials have been favorable.  Of course, I ran into a a few issues.  But mostly I was able to get things up and running, without too much trouble.  
 
 
-<img src="/assets/img/streamdagster.png" alt="Dagster streamlit image" width="600px">
+
 
 I tried to keep it simple, flowing from the NYC Open Data API through various Dagster assets, eventually feeding into both static PNG charts and the dynamic Streamlit dashboard. 
 
