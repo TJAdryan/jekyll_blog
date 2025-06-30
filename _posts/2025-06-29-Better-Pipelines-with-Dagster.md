@@ -12,7 +12,7 @@ I am always looking for ways to improve my data pipelines, and Dagster has been 
 
 I tried to keep it simple, flowing from the NYC Open Data API through various Dagster assets, eventually feeding into both static PNG charts and the dynamic Streamlit dashboard. 
 
-Dagster updates the information and then it is displayed in the Streamlit app.  Here is an exmple of what the Streamlit app looks like:
+Dagster updates the information and then it is displayed in the Streamlit app.  Here is an exmple of what the output looks like:
 
 <img src="/assets/img/streamdagster.png" alt="Dagster streamlit image" width="600px">
 
