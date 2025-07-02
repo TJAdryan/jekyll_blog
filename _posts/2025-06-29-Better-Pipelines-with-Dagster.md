@@ -13,7 +13,16 @@ Dagster updates the information and then it is displayed in the Streamlit app.  
 
 <img src="/assets/img/streamdagster.png" alt="Dagster streamlit image" width="600px">
 
-The visual representation of the data flow in the README which I encourage you to check out directly on the [GitHub repo](https://github.com/TJAdryan/dagster_starter) walks through the process step by step. 
+The output from Dagster is no slouch when it comes to visualizations either.  Being able to see the orchestration visually and being able to choose to run a single asset is great.
+
+<img src="/assets/img/full_pipeline.png" alt="Dagster streamlit image" width="600px">
+
+
+Also the way Dagster displays the logs and allows you to trace back any issues is super helpful too.  Once you start a job you can move over to the runs tab, or you can follow the link that gets generated when you run a job.  
+<img src="/assets/img/Run_dagster.png" alt="Dagster streamlit image" width="600px">
+
+
+If you are interested in getting some ideas for yourself you can follow the README which you to check out directly on the [GitHub repo](https://github.com/TJAdryan/dagster_starter) and walks through the process step by step. 
 
 It was great to be able to use Dagster's built-in decorators to define assets and jobs, making the code cleaner and more maintainable. The use of `@asset` for defining assets and `@job` for was helpful for organizing the jobs.  I did get tripped up from time to time, but the Dagster documentation was really helpful.  I also found the [Dagster Slack community](https://dagster.io/community) had a lot of great hints and encouraging advice.
 
