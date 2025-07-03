@@ -82,6 +82,7 @@ stages:
         targetType: 'inline'
         script: |
           # Set Git user for the commit
+          set -e # Exit immediately if a command exits with a non-zero status.
           git config --global user.email "azure-devops@$(Build.Repository.Name).com"
           git config --global user.name "Azure DevOps CD Pipeline"
 
@@ -97,9 +98,7 @@ stages:
 
           # Remove all existing files (except .git folder) to ensure a clean deploy.
           # This is crucial for static sites to remove old files that are no longer generated.
-          shopt -s dotglob # Include dotfiles in globbing
-          rm -rf * # Remove all files and directories
-          shopt -u dotglob # Disable dotglob again
+          find . ! -path "./.git*" -maxdepth 1 -not -name ".git" -print0 | xargs -0 rm -rf
 
           # Copy the newly built site files from the artifact download directory
           # The artifact will be downloaded to $(Pipeline.Workspace)/$(artifactName)
@@ -107,7 +106,7 @@ stages:
 
           # Add all changes, commit, and push to the GitHub Pages branch
           git add .
-          git commit -m "Azure DevOps CD: Deployed new blog content [skip ci]" # [skip ci] prevents infinite loops
+          git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" # [skip ci] prevents infinite loops
           git push origin $(githubPagesBranch)
         env:
           # Make sure GITHUB_PAT is defined as a secret variable in a variable group
