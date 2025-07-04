@@ -85,7 +85,7 @@ stages:
           git config --global user.name "Azure DevOps CD Pipeline"
 
           # Clone the GitHub repository into a temporary directory
-          git clone https://x-access-token:${env:GITHUB_PAT}@github.com/nextvaldata/${env:BUILD_REPOSITORY_NAME}.git temp_repo
+          git clone https://x-access-token:$(GITHUB_PAT)@github.com/TJAdryan/$(Build.Repository.Name).git temp_repo
 
           # Navigate into the cloned repository
           Set-Location temp_repo
