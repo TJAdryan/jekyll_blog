@@ -1,0 +1,103 @@
+# azure-pipelines.yml
+
+# This pipeline is triggered whenever changes are pushed to the 'main' branch.
+trigger:
+  - main
+
+# Define the agent pool where the job will run.
+# 'ubuntu-latest' is a common and good choice for Jekyll builds.
+pool:
+  vmImage: 'ubuntu-latest'
+
+# Define variables used throughout the pipeline.
+variables:
+  # Specify the Jekyll and Ruby versions your project uses.
+  # Match these to your local development environment for consistency.
+  jekyllVersion: '4.4.1'
+  rubyVersion: '3.2.2'
+  
+  # This variable will hold the value of your GitHub Personal Access Token.
+  # The actual value for GITHUB_PAT MUST be configured as a secret variable
+  # in your Azure DevOps pipeline settings (not directly in this YAML).
+  githubAuthToken: $(GITHUB_PAT) 
+
+jobs:
+- job: BuildAndDeployJekyll
+  displayName: 'Build and Deploy Jekyll Site'
+  
+  steps:
+  # Checkout your source code from the repository.
+  # 'persistCredentials: true' is essential to allow the pipeline to push changes back to Git.
+  - checkout: self
+    persistCredentials: true 
+
+  # Task to set up the specified Ruby version on the build agent.
+  - displayName: 'Setup Ruby Environment'
+    task: UseRubyVersion@0
+    inputs:
+      versionSpec: '$(rubyVersion)'
+      addToPath: true
+
+  # Install Bundler, which manages Ruby gem dependencies.
+  - displayName: 'Install Bundler'
+    bash: |
+      gem install bundler
+
+  # Install Jekyll and all other gems specified in your Gemfile.
+  - displayName: 'Install Jekyll and Dependencies'
+    bash: |
+      bundle install --jobs 4 --retry 3 # '--jobs 4' for parallel installation, '--retry 3' for robustness
+
+  # Build the Jekyll site. The output will be in the '_site' directory.
+  - displayName: 'Build Jekyll Site'
+    bash: |
+      # Ensure your _config.yml is correctly set up for your live domain (url: "https://nextvaldata.com")
+      bundle exec jekyll build --config _config.yml
+      # If you have environment-specific configurations (e.g., _config_production.yml),
+      # you might include them here:
+      # bundle exec jekyll build --config _config.yml,_config_production.yml
+
+  # Publish the generated '_site' directory as a build artifact.
+  # This is good practice and makes the built files available for later stages or debugging.
+  - displayName: 'Publish Build Artifacts'
+    task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '_site' # The directory Jekyll builds into
+      artifactName: 'jekyll-site' # A name for your artifact
+      publishLocation: 'Container' # Publish to Azure DevOps artifact storage
+
+  # Deploy the built site to GitHub Pages.
+  # This step only runs if the previous build steps succeeded and if triggered from the 'main' branch.
+  - displayName: 'Deploy to GitHub Pages'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    
+    # Set the working directory for this bash script to the location of the published artifact.
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/jekyll-site'
+    bash: |
+      # Configure Git user for the commit history on the gh-pages branch.
+      git config user.name "Azure DevOps Pipeline"
+      git config user.email "azure-devops@example.com" # Use a generic email for the pipeline
+
+      # Fetch the gh-pages branch from origin to ensure it exists locally for manipulation.
+      git fetch origin gh-pages:gh-pages
+      
+      # Checkout the gh-pages branch.
+      git checkout gh-pages
+      
+      # Remove all existing files from the gh-pages branch to ensure a clean deployment.
+      # This prevents old files from lingering if they were removed from the source.
+      git rm -rf .
+      
+      # Copy the newly built site content from the artifact directory to the current branch (gh-pages).
+      # The `.` refers to the current working directory, which is now the gh-pages branch's root.
+      cp -r $(Build.ArtifactStagingDirectory)/jekyll-site/* .
+      
+      # Add all changes to the Git staging area.
+      git add .
+      
+      # Commit the changes. '|| true' makes this step succeed even if there are no changes to commit.
+      git commit -m "Azure DevOps Build: Deploying Jekyll site from main branch" || true
+      
+      # Push the updated gh-pages branch to GitHub.
+      # We use the githubAuthToken (which contains your GITHUB_PAT) for authentication.
+      git push "https://$(githubAuthToken)@github.com/TJAdryan/jekyll_blog.git" gh-pages
