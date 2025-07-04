@@ -13,10 +13,14 @@ pool:
 
 # Variables for easy customization
 variables:
-  group: nextvaldataBlogSecrets # Link the variable group here
-  githubPagesBranch: 'gh-pages' # <--- IMPORTANT: Adjust this to your GitHub Pages source branch
-  jekyllOutputFolder: '_site'
-  artifactName: 'nextvaldata_site'
+  - name: group
+    value: nextvaldataBlogSecrets # Link the variable group here
+  - name: githubPagesBranch
+    value: 'gh-pages' # <--- IMPORTANT: Adjust this to your GitHub Pages source branch
+  - name: jekyllOutputFolder
+    value: '_site'
+  - name: artifactName
+    value: 'nextvaldata_site'
 
 # Stages define distinct phases of your pipeline (e.g., Build, Deploy)
 stages:
