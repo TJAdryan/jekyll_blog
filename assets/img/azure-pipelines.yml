@@ -1,20 +1,4 @@
 # azure-pipelines.yml
-variables:
-  - group: GitHubSecrets # <-- This line links your variable group
-  - group: nextvaldataBlogSecrets # Link the variable group here (just 'group: <group_name>')
-  - name: githubPagesBranch
-    value: 'gh-pages' # <--- IMPORTANT: Adjust this to your GitHub Pages source branch
-  - name: jekyllOutputFolder
-    value: '_site'
-  - name: artifactName
-    value: 'nextvaldata_site'
-  - name: jekyllVersion # <--- CORRECTED: Now part of the list
-    value: '4.4.1'
-  - name: rubyVersion # <--- CORRECTED: Now part of the list
-    value: '3.2'
-
-# ... rest of your pipeline YAML ...
-
 # Trigger the pipeline on pushes to your content branch (e.g., 'main')
 trigger:
   branches:
@@ -25,6 +9,20 @@ trigger:
 # For public projects, you get unlimited minutes on these agents!
 pool:
   vmImage: 'ubuntu-latest' # A recent Ubuntu image with Ruby/Bundler typically available
+
+# Variables for easy customization
+variables:
+  # The branch on your GitHub repository that GitHub Pages serves from.
+  # COMMON VALUES: 'gh-pages' (for project pages) or 'main' (for user/org pages).
+  # Check your GitHub repo's Settings -> Pages section to confirm your "Build and deployment" source.
+  githubPagesBranch: 'main' # <--- IMPORTANT: Adjust this to your GitHub Pages source branch
+
+  # The directory where Jekyll outputs the built static files.
+  # By default, Jekyll outputs to '_site'.
+  jekyllOutputFolder: '_site'
+
+  # The name of the artifact that will contain your built website files.
+  artifactName: 'nextvaldata_site'
 
 # Stages define distinct phases of your pipeline (e.g., Build, Deploy)
 stages:
@@ -37,16 +35,19 @@ stages:
     - task: UseRubyVersion@0
       displayName: 'Use Ruby Version (for Jekyll)'
       inputs:
-        # Use the variable defined in the 'variables' section
-        versionSpec: '$(rubyVersion)' 
+        versionSpec: '3.1' # <--- Adjust Ruby version if your Jekyll version requires it
         addToPath: true
 
     - script: |
+        # Ensure Bundler is installed
         gem install bundler --no-document
+        # Install Jekyll and other gems defined in your Gemfile.lock
         bundle install --jobs 4 --retry 3
       displayName: 'Install Jekyll Dependencies (Bundler)'
 
     - script: |
+        # Build the Jekyll site.
+        # --destination flag ensures it builds directly into the artifact staging directory.
         bundle exec jekyll build --destination "$(Build.ArtifactStagingDirectory)/$(jekyllOutputFolder)"
       displayName: 'Run Jekyll Build'
 
@@ -56,8 +57,9 @@ stages:
 
 - stage: DeployToGitHubPages
   displayName: 'Deploy to GitHub Pages'
+  # This stage depends on the 'BuildBlog' stage completing successfully
   dependsOn: BuildBlog
-  condition: succeeded()
+  condition: succeeded() # Only deploy if the build was successful
 
   jobs:
   - job: DeployJob
@@ -67,33 +69,45 @@ stages:
       artifact: '$(artifactName)'
       displayName: 'Download Built Site Artifact'
 
-    - task: Bash@3
+    # This Bash script handles the Git operations to push to GitHub Pages.
+    # It requires a GitHub Personal Access Token (PAT) for authentication.
+    # IN AZURE DEVOPS: Create a Variable Group (e.g., 'GitHubSecrets')
+    # and add a secret variable named 'GITHUB_PAT' with your PAT as its value.
+    # Link this variable group to your pipeline.
+    # The PAT needs 'repo' scope on GitHub.
+    - task: PowerShell@2
       displayName: 'Push to GitHub Pages'
       inputs:
         targetType: 'inline'
         script: |
-          set -e
-          git config --global user.email "azure-devops@$(Build.Repository.Name).com"
+          # Set Git user for the commit
+          git config --global user.email "azure-devops@${env:BUILD_REPOSITORY_NAME}.com"
           git config --global user.name "Azure DevOps CD Pipeline"
 
           # Clone the GitHub repository into a temporary directory
-          # Use the GITHUB_PAT for authentication.
-          # Build.Repository.Name automatically gets the repo name (e.g., jekyll_blog)
-          git clone https://x-access-token:$(GITHUB_PAT)@github.com/TJAdryan/$(Build.Repository.Name).git temp_repo 
-          
-          cd temp_repo
+          git clone https://x-access-token:${env:GITHUB_PAT}@github.com/nextvaldata/${env:BUILD_REPOSITORY_NAME}.git temp_repo
 
-          git checkout $(githubPagesBranch) || git checkout -b $(githubPagesBranch)
+          # Navigate into the cloned repository
+          Set-Location temp_repo
 
-          find . ! -path "./.git*" -maxdepth 1 -not -name ".git" -print0 | xargs -0 rm -rf
+          # Checkout the GitHub Pages branch. Create it if it doesn't exist.
+          git checkout $env:githubPagesBranch 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            git checkout -b $env:githubPagesBranch
+          }
 
-          # Copy from the artifact download location (which is $(Pipeline.Workspace)/$(artifactName))
-          cp -r "$(Pipeline.Workspace)/$(artifactName)/." .
+          # Remove all existing files (except .git folder) to ensure a clean deploy.
+          Get-ChildItem -Path . -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
 
+          # Copy the newly built site files from the artifact download directory
+          Copy-Item -Path "$env:PIPELINE_WORKSPACE\$env:artifactName\*" -Destination . -Recurse -Force
+
+          # Add all changes, commit, and push to the GitHub Pages branch
           git add .
-          git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]"
-          git push origin $(githubPagesBranch)
+          git commit -m "Azure DevOps CD: Deployed new blog content [skip ci]"
+          git push origin $env:githubPagesBranch
       env:
-        # GITHUB_PAT is sourced from the variable group 'nextvaldataBlogSecrets'
-        # which is linked at the top of the YAML.
         GITHUB_PAT: $(GITHUB_PAT)
+        githubPagesBranch: $(githubPagesBranch)
+        artifactName: $(artifactName)
+        PIPELINE_WORKSPACE: $(Pipeline.Workspace)
