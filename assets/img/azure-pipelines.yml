@@ -108,7 +108,7 @@ stages:
           git add .
           git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" # [skip ci] prevents infinite loops
           git push origin $(githubPagesBranch)
-        env:
-          # Make sure GITHUB_PAT is defined as a secret variable in a variable group
-          # and that the variable group is linked to this pipeline.
-          GITHUB_PAT: $(GITHUB_PAT)
+      env:
+        # Make sure GITHUB_PAT is defined as a secret variable in a variable group
+        # and that the variable group is linked to this pipeline.
+        GITHUB_PAT: $(GITHUB_PAT)

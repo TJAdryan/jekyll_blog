@@ -10,8 +10,9 @@ pool:
 
 # Define variables used throughout the pipeline.
 variables:
-  jekyllVersion: '4.4.1'
-  rubyVersion: '3.2' # Using '3.2' for broader compatibility
+  - group: nextvaldataBlogSecrets  # Link the variable group here
+  - jekyllVersion: '4.4.1'
+  - rubyVersion: '3.2' # Using '3.2' for broader compatibility
   # No need to assign GITHUB_PAT to another pipeline variable here
   # It will be directly passed as an environment variable to the bash step
 
