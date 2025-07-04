@@ -1,4 +1,8 @@
 # azure-pipelines.yml
+variables:
+- group: GitHubSecrets # <-- This line links your variable group
+
+# ... rest of your pipeline YAML ...
 
 # Trigger the pipeline on pushes to your content branch (e.g., 'main')
 trigger:
