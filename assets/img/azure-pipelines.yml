@@ -13,16 +13,9 @@ pool:
 
 # Variables for easy customization
 variables:
-  # The branch on your GitHub repository that GitHub Pages serves from.
-  # COMMON VALUES: 'gh-pages' (for project pages) or 'main' (for user/org pages).
-  # Check your GitHub repo's Settings -> Pages section to confirm your "Build and deployment" source.
+  group: nextvaldataBlogSecrets # Link the variable group here
   githubPagesBranch: 'gh-pages' # <--- IMPORTANT: Adjust this to your GitHub Pages source branch
-
-  # The directory where Jekyll outputs the built static files.
-  # By default, Jekyll outputs to '_site'.
   jekyllOutputFolder: '_site'
-
-  # The name of the artifact that will contain your built website files.
   artifactName: 'nextvaldata_site'
 
 # Stages define distinct phases of your pipeline (e.g., Build, Deploy)
