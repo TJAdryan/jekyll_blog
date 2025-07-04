@@ -14,7 +14,7 @@ variables:
   # Specify the Jekyll and Ruby versions your project uses.
   # Match these to your local development environment for consistency.
   jekyllVersion: '4.4.1'
-  rubyVersion: '3.2.2'
+  rubyVersion: '3.2'
   
   # This variable will hold the value of your GitHub Personal Access Token.
   # The actual value for GITHUB_PAT MUST be configured as a secret variable
