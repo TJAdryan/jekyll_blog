@@ -46,6 +46,9 @@
         git add .
         git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" # [skip ci] prevents infinite loops
         git push origin $(githubPagesBranch)
+      variables:
+  
+    - group: nextvaldataBlogSecrets
       displayName: 'Push to GitHub Pages' # This displayName is fine
       env:
         # Make sure GITHUB_PAT is defined as a secret variable in a variable group
