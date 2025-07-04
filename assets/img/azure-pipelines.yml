@@ -13,14 +13,17 @@ pool:
 
 # Variables for easy customization
 variables:
-  - name: group
-    value: nextvaldataBlogSecrets # Link the variable group here
+  - group: nextvaldataBlogSecrets # Link the variable group here (just 'group: <group_name>')
   - name: githubPagesBranch
     value: 'gh-pages' # <--- IMPORTANT: Adjust this to your GitHub Pages source branch
   - name: jekyllOutputFolder
     value: '_site'
   - name: artifactName
     value: 'nextvaldata_site'
+  - name: jekyllVersion # <--- CORRECTED: Now part of the list
+    value: '4.4.1'
+  - name: rubyVersion # <--- CORRECTED: Now part of the list
+    value: '3.2'
 
 # Stages define distinct phases of your pipeline (e.g., Build, Deploy)
 stages:
@@ -33,19 +36,16 @@ stages:
     - task: UseRubyVersion@0
       displayName: 'Use Ruby Version (for Jekyll)'
       inputs:
-        versionSpec: '3.2' # or '3.x'
+        # Use the variable defined in the 'variables' section
+        versionSpec: '$(rubyVersion)' 
         addToPath: true
 
     - script: |
-        # Ensure Bundler is installed
         gem install bundler --no-document
-        # Install Jekyll and other gems defined in your Gemfile.lock
         bundle install --jobs 4 --retry 3
       displayName: 'Install Jekyll Dependencies (Bundler)'
 
     - script: |
-        # Build the Jekyll site.
-        # --destination flag ensures it builds directly into the artifact staging directory.
         bundle exec jekyll build --destination "$(Build.ArtifactStagingDirectory)/$(jekyllOutputFolder)"
       displayName: 'Run Jekyll Build'
 
@@ -55,9 +55,8 @@ stages:
 
 - stage: DeployToGitHubPages
   displayName: 'Deploy to GitHub Pages'
-  # This stage depends on the 'BuildBlog' stage completing successfully
   dependsOn: BuildBlog
-  condition: succeeded() # Only deploy if the build was successful
+  condition: succeeded()
 
   jobs:
   - job: DeployJob
@@ -67,45 +66,33 @@ stages:
       artifact: '$(artifactName)'
       displayName: 'Download Built Site Artifact'
 
-    # This Bash script handles the Git operations to push to GitHub Pages.
-    # It requires a GitHub Personal Access Token (PAT) for authentication.
-    # IN AZURE DEVOPS: Create a Variable Group (e.g., 'GitHubSecrets')
-    # and add a secret variable named 'GITHUB_PAT' with your PAT as its value.
-    # Link this variable group to your pipeline.
-    # The PAT needs 'repo' scope on GitHub.
     - task: Bash@3
       displayName: 'Push to GitHub Pages'
       inputs:
         targetType: 'inline'
         script: |
-          # Set Git user for the commit
-          set -e # Exit immediately if a command exits with a non-zero status.
+          set -e
           git config --global user.email "azure-devops@$(Build.Repository.Name).com"
           git config --global user.name "Azure DevOps CD Pipeline"
 
           # Clone the GitHub repository into a temporary directory
-          # Use the GITHUB_PAT for authentication. Replace 'YourGitHubUsername' and 'YourRepoName'.
-          git clone https://x-access-token:$(GITHUB_PAT)@github.com/nextvaldata/$(Build.Repository.Name).git temp_repo
-
-          # Navigate into the cloned repository
+          # Use the GITHUB_PAT for authentication.
+          # Build.Repository.Name automatically gets the repo name (e.g., jekyll_blog)
+          git clone https://x-access-token:$(GITHUB_PAT)@github.com/TJAdryan/$(Build.Repository.Name).git temp_repo 
+          
           cd temp_repo
 
-          # Checkout the GitHub Pages branch. Create it if it doesn't exist.
           git checkout $(githubPagesBranch) || git checkout -b $(githubPagesBranch)
 
-          # Remove all existing files (except .git folder) to ensure a clean deploy.
-          # This is crucial for static sites to remove old files that are no longer generated.
           find . ! -path "./.git*" -maxdepth 1 -not -name ".git" -print0 | xargs -0 rm -rf
 
-          # Copy the newly built site files from the artifact download directory
-          # The artifact will be downloaded to $(Pipeline.Workspace)/$(artifactName)
+          # Copy from the artifact download location (which is $(Pipeline.Workspace)/$(artifactName))
           cp -r "$(Pipeline.Workspace)/$(artifactName)/." .
 
-          # Add all changes, commit, and push to the GitHub Pages branch
           git add .
-          git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" # [skip ci] prevents infinite loops
+          git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]"
           git push origin $(githubPagesBranch)
       env:
-        # Make sure GITHUB_PAT is defined as a secret variable in a variable group
-        # and that the variable group is linked to this pipeline.
+        # GITHUB_PAT is sourced from the variable group 'nextvaldataBlogSecrets'
+        # which is linked at the top of the YAML.
         GITHUB_PAT: $(GITHUB_PAT)
