@@ -35,7 +35,7 @@ stages:
     - task: UseRubyVersion@0
       displayName: 'Use Ruby Version (for Jekyll)'
       inputs:
-        versionSpec: '3.1' # <--- Adjust Ruby version if your Jekyll version requires it
+        versionSpec: '3.2' # <--- Adjust Ruby version if your Jekyll version requires it
         addToPath: true
 
     - script: |
