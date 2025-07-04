@@ -1,6 +1,17 @@
 # azure-pipelines.yml
 variables:
-- group: GitHubSecrets # <-- This line links your variable group
+  - group: GitHubSecrets # <-- This line links your variable group
+  - group: nextvaldataBlogSecrets # Link the variable group here (just 'group: <group_name>')
+  - name: githubPagesBranch
+    value: 'gh-pages' # <--- IMPORTANT: Adjust this to your GitHub Pages source branch
+  - name: jekyllOutputFolder
+    value: '_site'
+  - name: artifactName
+    value: 'nextvaldata_site'
+  - name: jekyllVersion # <--- CORRECTED: Now part of the list
+    value: '4.4.1'
+  - name: rubyVersion # <--- CORRECTED: Now part of the list
+    value: '3.2'
 
 # ... rest of your pipeline YAML ...
 
@@ -14,20 +25,6 @@ trigger:
 # For public projects, you get unlimited minutes on these agents!
 pool:
   vmImage: 'ubuntu-latest' # A recent Ubuntu image with Ruby/Bundler typically available
-
-# Variables for easy customization
-variables:
-  - group: nextvaldataBlogSecrets # Link the variable group here (just 'group: <group_name>')
-  - name: githubPagesBranch
-    value: 'gh-pages' # <--- IMPORTANT: Adjust this to your GitHub Pages source branch
-  - name: jekyllOutputFolder
-    value: '_site'
-  - name: artifactName
-    value: 'nextvaldata_site'
-  - name: jekyllVersion # <--- CORRECTED: Now part of the list
-    value: '4.4.1'
-  - name: rubyVersion # <--- CORRECTED: Now part of the list
-    value: '3.2'
 
 # Stages define distinct phases of your pipeline (e.g., Build, Deploy)
 stages:
