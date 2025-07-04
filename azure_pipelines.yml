@@ -11,8 +11,9 @@ pool:
 # Define variables used throughout the pipeline.
 variables:
   jekyllVersion: '4.4.1'
-  rubyVersion: '3.2' # Changed to '3.2' for broader compatibility
-  githubAuthToken: $(GITHUB_PAT) 
+  rubyVersion: '3.2' # Using '3.2' for broader compatibility
+  # No need to assign GITHUB_PAT to another pipeline variable here
+  # It will be directly passed as an environment variable to the bash step
 
 jobs:
 - job: BuildAndDeployJekyll
@@ -54,28 +55,23 @@ jobs:
       git config user.name "Azure DevOps Pipeline"
       git config user.email "azure-devops@example.com"
 
-      # Fetch the gh-pages branch into a local tracking branch.
       git fetch origin gh-pages:gh-pages
-      
-      # Checkout the gh-pages branch. This changes the content of the working directory.
       git checkout gh-pages
       
-      # Remove all existing files from the gh-pages branch to ensure a clean deployment.
       git rm -rf .
       
-      # Copy the newly built site content from the _site directory (relative to repo root)
-      # to the current working directory (which is now the gh-pages branch's root).
       cp -r "_site/"* . 
       
-      # Add all changes to the Git staging area.
       git add .
-      
-      # Commit the changes. '|| true' makes this step succeed even if no changes occurred.
       git commit -m "Azure DevOps Build: Deploying Jekyll site from main branch" || true
       
-      # Push the updated gh-pages branch to GitHub using the PAT.
-      git push "https://$(githubAuthToken)@github.com/TJAdryan/jekyll_blog.git" gh-pages
+      # *** CRITICAL CHANGE HERE ***
+      # Use the environment variable 'GH_TOKEN_VAR' which is set in the 'env:' block below.
+      # This securely passes the PAT to the bash script.
+      git push "https://${GH_TOKEN_VAR}@github.com/TJAdryan/jekyll_blog.git" gh-pages
     displayName: 'Deploy to GitHub Pages'
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    # !!! REMOVED THE FOLLOWING LINE !!!
-    # workingDirectory: '$(Build.ArtifactStagingDirectory)/jekyll-site'
+    
+    # This 'env' block is crucial for securely exposing your secret to THIS specific bash step.
+    env:
+      GH_TOKEN_VAR: $(GITHUB_PAT) # The name of your secret variable in Azure DevOps
