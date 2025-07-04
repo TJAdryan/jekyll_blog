@@ -23,7 +23,7 @@ variables:
 
 jobs:
 - job: BuildAndDeployJekyll
-  displayName: 'Build and Deploy Jekyll Site'
+  displayName: 'Build and Deploy Jekyll Site' # This displayName is for the job itself, which is correct
   
   steps:
   # Checkout your source code from the repository.
@@ -32,35 +32,35 @@ jobs:
     persistCredentials: true 
 
   # Task to set up the specified Ruby version on the build agent.
-  - displayName: 'Setup Ruby Environment'
-    task: UseRubyVersion@0
+  - task: UseRubyVersion@0
+    displayName: 'Setup Ruby Environment' # Correctly indented under 'task'
     inputs:
       versionSpec: '$(rubyVersion)'
       addToPath: true
 
   # Install Bundler, which manages Ruby gem dependencies.
-  - displayName: 'Install Bundler'
-    bash: |
+  - bash: |
       gem install bundler
+    displayName: 'Install Bundler' # Correctly indented under 'bash'
 
   # Install Jekyll and all other gems specified in your Gemfile.
-  - displayName: 'Install Jekyll and Dependencies'
-    bash: |
+  - bash: |
       bundle install --jobs 4 --retry 3 # '--jobs 4' for parallel installation, '--retry 3' for robustness
+    displayName: 'Install Jekyll and Dependencies' # Correctly indented under 'bash'
 
   # Build the Jekyll site. The output will be in the '_site' directory.
-  - displayName: 'Build Jekyll Site'
-    bash: |
+  - bash: |
       # Ensure your _config.yml is correctly set up for your live domain (url: "https://nextvaldata.com")
       bundle exec jekyll build --config _config.yml
       # If you have environment-specific configurations (e.g., _config_production.yml),
       # you might include them here:
       # bundle exec jekyll build --config _config.yml,_config_production.yml
+    displayName: 'Build Jekyll Site' # Correctly indented under 'bash'
 
   # Publish the generated '_site' directory as a build artifact.
   # This is good practice and makes the built files available for later stages or debugging.
-  - displayName: 'Publish Build Artifacts'
-    task: PublishBuildArtifacts@1
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Build Artifacts' # Correctly indented under 'task'
     inputs:
       pathToPublish: '_site' # The directory Jekyll builds into
       artifactName: 'jekyll-site' # A name for your artifact
@@ -68,12 +68,7 @@ jobs:
 
   # Deploy the built site to GitHub Pages.
   # This step only runs if the previous build steps succeeded and if triggered from the 'main' branch.
-  - displayName: 'Deploy to GitHub Pages'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    
-    # Set the working directory for this bash script to the location of the published artifact.
-    workingDirectory: '$(Build.ArtifactStagingDirectory)/jekyll-site'
-    bash: |
+  - bash: |
       # Configure Git user for the commit history on the gh-pages branch.
       git config user.name "Azure DevOps Pipeline"
       git config user.email "azure-devops@example.com" # Use a generic email for the pipeline
@@ -101,3 +96,6 @@ jobs:
       # Push the updated gh-pages branch to GitHub.
       # We use the githubAuthToken (which contains your GITHUB_PAT) for authentication.
       git push "https://$(githubAuthToken)@github.com/TJAdryan/jekyll_blog.git" gh-pages
+    displayName: 'Deploy to GitHub Pages' # Correctly indented under 'bash'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/jekyll-site'
