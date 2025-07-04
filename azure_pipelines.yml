@@ -37,7 +37,7 @@ stages:
 
         # Clone the GitHub repository into a temporary directory
         # In PowerShell, environment variables are accessed via $env:
-        git clone "https://x-access-token:$($env:GITHUB_PAT)@github.com/TJAdryan/$($env:BUILD_REPOSITORY_NAME).git" temp_repo
+        git clone https://x-access-token:$($env:GITHUB_PAT)@github.com/TJAdryan/$(Build.Repository.Name).git temp_repo
         #Where is GITHUB_PAT?
         # Navigate into the cloned repository
         Set-Location temp_repo
