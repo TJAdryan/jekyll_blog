@@ -15,9 +15,9 @@
 
     # This script handles the Git operations to push to GitHub Pages.
     # We are using 'script:' and explicitly stating '#!/bin/bash' to ensure it runs as Bash.
-    - script: |  # Changed from - task: Bash@3
-        #!/bin/bash # Explicitly tell the system to use the Bash interpreter
-        set -e # Exit immediately if a command exits with a non-zero status.
+    - script: |
+        #!/bin/bash
+        set -e
 
         # Set Git user for the commit
         git config --global user.email "azure-devops@$(Build.Repository.Name).com"
@@ -25,7 +25,8 @@
 
         # Clone the GitHub repository into a temporary directory
         # Use the GITHUB_PAT for authentication. Replace 'TJAdryan' with your actual GitHub username/organization.
-        git clone https://x-access-token:$(GITHUB_PAT)@github.com/TJAdryan/$(Build.Repository.Name).git temp_repo
+        # The GITHUB_PAT variable is now available as an environment variable thanks to the 'env:' block below.
+        git clone https://x-access-token:$GITHUB_PAT@github.com/TJAdryan/$(Build.Repository.Name).git temp_repo
 
         # Navigate into the cloned repository
         cd temp_repo
@@ -35,7 +36,6 @@
 
         # Remove all existing files (except .git folder) to ensure a clean deploy.
         # This is crucial for static sites to remove old files that are no longer generated.
-        # This is a more robust way to delete all files/folders except the .git directory.
         find . -maxdepth 1 -mindepth 1 ! -name '.git' -exec rm -rf {} +
 
         # Copy the newly built site files from the artifact download directory
@@ -46,11 +46,19 @@
         git add .
         git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" # [skip ci] prevents infinite loops
         git push origin $(githubPagesBranch)
-      variables:
-  
-    - group: nextvaldataBlogSecrets
-      displayName: 'Push to GitHub Pages' # This displayName is fine
+      displayName: 'Push to GitHub Pages' # Moved displayName here for clarity
       env:
         # Make sure GITHUB_PAT is defined as a secret variable in a variable group
         # and that the variable group is linked to this pipeline.
-        GITHUB_PAT: $(GITHUB_PAT)
+        # This makes GITHUB_PAT available as an environment variable inside this script.
+        GITHUB_PAT: $(GITHUB_PAT) # This will resolve the secret from the variable group
+
+    # Ensure your variable group is linked at the pipeline or job level
+  - job: DummyJobToLinkVariableGroup # You can keep your variable group linked at the job level or pipeline level
+    displayName: 'Link Variable Group'
+    dependsOn: [] # This job doesn't depend on others
+    steps:
+    - script: echo "Linking variable group for secrets"
+      displayName: 'Info Step'
+    variables:
+    - group: nextvaldataBlogSecrets # Link the variable group here, at the job or pipeline level.
