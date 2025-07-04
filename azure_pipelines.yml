@@ -1,78 +1,53 @@
-# azure-pipelines.yml
+# ... (previous stages like BuildBlog are unchanged) ...
 
-# This pipeline is triggered whenever changes are pushed to the 'main' branch.
-trigger:
-  - main
+- stage: DeployToGitHubPages
+  displayName: 'Deploy to GitHub Pages'
+  dependsOn: BuildBlog
+  condition: succeeded() # Only deploy if the build was successful
 
-# Define the agent pool where the job will run.
-pool:
-  vmImage: 'ubuntu-latest'
+  jobs:
+  - job: DeployJob
+    displayName: 'Push to GitHub Pages'
+    steps:
+    - download: current
+      artifact: '$(artifactName)'
+      displayName: 'Download Built Site Artifact'
 
-# Define variables used throughout the pipeline.
-variables:
-  - group: nextvaldataBlogSecrets  # Link the variable group here
-  - jekyllVersion: '4.4.1'
-  - rubyVersion: '3.2' # Using '3.2' for broader compatibility
-  # No need to assign GITHUB_PAT to another pipeline variable here
-  # It will be directly passed as an environment variable to the bash step
+    # This script handles the Git operations to push to GitHub Pages.
+    # We are using 'script:' and explicitly stating '#!/bin/bash' to ensure it runs as Bash.
+    - script: |  # Changed from - task: Bash@3
+        #!/bin/bash # Explicitly tell the system to use the Bash interpreter
+        set -e # Exit immediately if a command exits with a non-zero status.
 
-jobs:
-- job: BuildAndDeployJekyll
-  displayName: 'Build and Deploy Jekyll Site'
-  
-  steps:
-  # Checkout your source code from the repository.
-  - checkout: self
-    persistCredentials: true 
+        # Set Git user for the commit
+        git config --global user.email "azure-devops@$(Build.Repository.Name).com"
+        git config --global user.name "Azure DevOps CD Pipeline"
 
-  - task: UseRubyVersion@0
-    displayName: 'Setup Ruby Environment'
-    inputs:
-      versionSpec: '$(rubyVersion)'
-      addToPath: true
+        # Clone the GitHub repository into a temporary directory
+        # Use the GITHUB_PAT for authentication. Replace 'TJAdryan' with your actual GitHub username/organization.
+        git clone https://x-access-token:$(GITHUB_PAT)@github.com/TJAdryan/$(Build.Repository.Name).git temp_repo
 
-  - bash: |
-      gem install bundler
-    displayName: 'Install Bundler'
+        # Navigate into the cloned repository
+        cd temp_repo
 
-  - bash: |
-      bundle install --jobs 4 --retry 3
-    displayName: 'Install Jekyll and Dependencies'
+        # Checkout the GitHub Pages branch. Create it if it doesn't exist.
+        git checkout $(githubPagesBranch) || git checkout -b $(githubPagesBranch)
 
-  - bash: |
-      bundle exec jekyll build --config _config.yml
-    displayName: 'Build Jekyll Site'
+        # Remove all existing files (except .git folder) to ensure a clean deploy.
+        # This is crucial for static sites to remove old files that are no longer generated.
+        # This is a more robust way to delete all files/folders except the .git directory.
+        find . -maxdepth 1 -mindepth 1 ! -name '.git' -exec rm -rf {} +
 
-  # Publish the generated '_site' directory as a build artifact (optional, but good for archiving).
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Build Artifacts'
-    inputs:
-      pathToPublish: '_site' # This publishes the _site folder
-      artifactName: 'jekyll-site'
-      publishLocation: 'Container' 
+        # Copy the newly built site files from the artifact download directory
+        # The artifact will be downloaded to $(Pipeline.Workspace)/$(artifactName)
+        cp -r "$(Pipeline.Workspace)/$(artifactName)/." .
 
-  # Deploy the built site to GitHub Pages.
-  - bash: |
-      git config user.name "Azure DevOps Pipeline"
-      git config user.email "azure-devops@example.com"
-
-      git fetch origin gh-pages:gh-pages
-      git checkout gh-pages
-      
-      git rm -rf .
-      
-      cp -r "_site/"* . 
-      
-      git add .
-      git commit -m "Azure DevOps Build: Deploying Jekyll site from main branch" || true
-      
-      # *** CRITICAL CHANGE HERE ***
-      # Use the environment variable 'GH_TOKEN_VAR' which is set in the 'env:' block below.
-      # This securely passes the PAT to the bash script.
-      git push "https://${GH_TOKEN_VAR}@github.com/TJAdryan/jekyll_blog.git" gh-pages
-    displayName: 'Deploy to GitHub Pages'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    
-    # This 'env' block is crucial for securely exposing your secret to THIS specific bash step.
-    env:
-      GH_TOKEN_VAR: $(GITHUB_PAT) # The name of your secret variable in Azure DevOps
+        # Add all changes, commit, and push to the GitHub Pages branch
+        git add .
+        git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" # [skip ci] prevents infinite loops
+        git push origin $(githubPagesBranch)
+      displayName: 'Push to GitHub Pages' # This displayName is fine
+      env:
+        # Make sure GITHUB_PAT is defined as a secret variable in a variable group
+        # and that the variable group is linked to this pipeline.
+        GITHUB_PAT: $(GITHUB_PAT)
