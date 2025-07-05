@@ -13,7 +13,7 @@ $justRepoName = (Split-Path -Leaf "$(Build.Repository.Name)")
 
 # Construct the correct GitHub URL using your GitHub username and the extracted repo name
 # Replace 'TJAdryan' with your actual GitHub username/organization if it's different.
-$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/TJAdryan/$justRepoName.git"
+$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/$justRepoName.git"
 
 # Define the temporary path to clone into
 $tempRepoPath = "temp_repo"
