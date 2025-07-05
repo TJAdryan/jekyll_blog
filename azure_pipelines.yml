@@ -1,0 +1,90 @@
+# azure-pipelines.yml
+
+# ... (previous stages and variables are the same) ...
+
+variables:
+- group: nextvaldataBlogSecrets_update # Ensure this variable group is linked in Azure DevOps UI
+  artifactName: 'dist-blog-site'
+  githubPagesBranch: 'gh-pages'
+
+stages:
+# ... (BuildBlog stage remains unchanged) ...
+
+
+- stage: DeployToGitHubPages
+  displayName: 'Deploy to GitHub Pages'
+  dependsOn: BuildBlog
+  condition: succeeded()
+
+  jobs:
+  - job: DeployJob
+    displayName: 'Push to GitHub Pages'
+    pool:
+      vmImage: 'ubuntu-latest' # PowerShell Core runs on Linux and Windows.
+                               # If your agent is Windows, 'windows-latest' is fine too.
+
+    steps:
+    - download: current
+      artifact: $(artifactName)
+      displayName: 'Download Built Site Artifact'
+
+    - task: PowerShell@2
+      displayName: 'Push to GitHub Pages'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Set Git user for the commit
+          git config --global user.email "azure-devops@${env:BUILD_REPOSITORY_NAME}.com"
+          git config --global user.name "Azure DevOps CD Pipeline"
+
+          # Clone the GitHub repository into a temporary directory
+          git clone https://x-access-token:${env:GITHUB_PAT}@github.com/TJAdryan/jekyll_blog.git temp_repo
+
+          # Navigate into the cloned repository
+          Set-Location temp_repo
+
+          # Checkout the GitHub Pages branch. Create it if it doesn't exist.
+          try {
+              git checkout $($env:GITHUBPAGESBRANCH)
+          } catch {
+              git checkout -b $($env:GITHUBPAGESBRANCH)
+          }
+          Write-Host "Checked out branch $($env:GITHUBPAGESBRANCH)"
+
+          # Clean the branch: Remove all existing files (except .git folder)
+          # Get-ChildItem and Remove-Item are PowerShell equivalents for 'ls' and 'rm'
+          Get-ChildItem -Path . -Exclude '.git' -Force | Remove-Item -Recurse -Force
+          Write-Host "Cleaned existing files on branch $($env:GITHUBPAGESBRANCH)"
+
+          # Copy the newly built site files from the artifact download directory
+          # The artifact will be downloaded to $(Pipeline.Workspace)/$(artifactName)
+          Copy-Item -Path "$($env:PIPELINE_WORKSPACE)/$($env:ARTIFACTNAME)/*" -Destination . -Recurse -Force
+          Copy-Item -Path "$($env:PIPELINE_WORKSPACE)/$($env:ARTIFACTNAME)/.*" -Destination . -Recurse -Force -ErrorAction SilentlyContinue # For hidden files
+          Write-Host "Copied new site files to temp_repo"
+
+          # Add all changes, commit, and push to the GitHub Pages branch
+          git add .
+          # The '[skip ci]' in the commit message prevents GitHub Actions (if configured)
+          # from triggering an infinite build loop based on this commit.
+          try {
+              git commit -m "Azure DevOps CD: Deployed new blog content - Build $($env:BUILD_BUILDID) [skip ci]"
+              Write-Host "Committed changes."
+          } catch {
+              Write-Host "No changes to commit."
+          }
+
+          git push origin $($env:GITHUBPAGESBRANCH)
+          Write-Host "Successfully pushed to GitHub Pages!"
+
+  env:
+    # This makes the value of $(GITHUB_PAT) (resolved by Azure DevOps) available
+    # as an environment variable named GITHUB_PAT to the PowerShell script.
+    GITHUB_PAT: $(GITHUB_PAT)
+
+    # It's good practice to explicitly map other pipeline variables
+    # you want to use as environment variables in the script:
+    ARTIFACTNAME: $(artifactName)
+    GITHUBPAGESBRANCH: $(githubPagesBranch)
+    BUILD_REPOSITORY_NAME: $(Build.Repository.Name)
+    BUILD_BUILDID: $(Build.BuildId)
+    PIPELINE_WORKSPACE: $(Pipeline.Workspace)
