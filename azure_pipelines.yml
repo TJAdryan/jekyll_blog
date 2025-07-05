@@ -14,84 +14,22 @@ stages:
 - stage: DeployToGitHubPages
   displayName: 'Deploy to GitHub Pages'
   dependsOn: BuildBlog
-  condition: succeeded() # Only deploy if the build was successful
+  condition: succeeded()
 
   jobs:
   - job: DeployJob
     displayName: 'Push to GitHub Pages'
+    pool:
+      vmImage: 'ubuntu-latest' # PowerShell Core runs on Linux and Windows.
+                               # If your agent is Windows, 'windows-latest' is fine too.
+
     steps:
     - download: current
-      artifact: '$(artifactName)'
+      artifact: $(artifactName)
       displayName: 'Download Built Site Artifact'
 
-    # Call the external PowerShell script file
-    - task: PowerShell@2 
-      displayName: 'Execute Deployment Script'
-      inputs:
-        filePath: 'deploy.ps1' # Path to your new PowerShell script file
-        arguments: '-GitHubPatToken $(GITHUB_PAT)' # Still pass the PAT as an argument
-    # --- START OF BASH SCRIPT CONVERSION ---
-    - script: |
-        #!/bin/bash # Explicitly use the Bash interpreter
-        set -e # Exit immediately if a command exits with a non-zero status.
-
-        echo "Starting deployment to GitHub Pages..."
-        echo "Repository: ${BUILD_REPOSITORY_NAME}"
-        echo "Target branch: ${GITHUBPAGESBRANCH}"
-        echo "Artifact path: ${PIPELINE_WORKSPACE}/${ARTIFACTNAME}"
-
-        # Set Git user for the commit
-        git config --global user.email "azure-devops@${BUILD_REPOSITORY_NAME}.com"
-        git config --global user.name "Azure DevOps CD Pipeline"
-
-        # Clone the GitHub repository into a temporary directory
-        # CRITICAL FIX for Bash: GITHUB_PAT is now available as a direct environment variable
-        # Use ${VAR_NAME} or $VAR_NAME for Bash environment variables.
-        git clone "https://x-access-token:${GITHUB_PAT}@github.com/TJAdryan/${BUILD_REPOSITORY_NAME}.git" temp_repo
-
-        # Navigate into the cloned repository
-        cd temp_repo
-
-        # Checkout the GitHub Pages branch. Create it if it doesn't exist.
-        # '||' acts as "OR" - if git checkout fails (e.g., branch doesn't exist), then run git checkout -b
-        git checkout "${GITHUBPAGESBRANCH}" || git checkout -b "${GITHUBPAGESBRANCH}"
-        echo "Checked out branch ${GITHUBPAGESBRANCH}"
-
-        # Clean the branch: Remove all existing files (except .git folder)
-        # This is crucial for static sites to remove old files that are no longer generated.
-        find . -maxdepth 1 -mindepth 1 ! -name '.git' -exec rm -rf {} +
-        echo "Cleaned existing files on branch ${GITHUBPAGESBRANCH}"
-
-        # Copy the newly built site files from the artifact download directory
-        # The artifact will be downloaded to $(Pipeline.Workspace)/$(artifactName)
-        # The '.*' ensures hidden files like .htaccess are also copied if present.
-        cp -r "${PIPELINE_WORKSPACE}/${ARTIFACTNAME}/." .
-        echo "Copied new site files to temp_repo"
-
-        # Add all changes, commit, and push to the GitHub Pages branch
-        git add .
-        # The '[skip ci]' in the commit message prevents GitHub Actions (if configured)
-        # from triggering an infinite build loop based on this commit.
-        # '|| true' allows the script to continue if there are no changes to commit
-        git commit -m "Azure DevOps CD: Deployed new blog content - Build ${BUILD_BUILDID} [skip ci]" || echo "No changes to commit (commit skipped)."
-        echo "Commit command executed."
-
-        git push origin "${GITHUBPAGESBRANCH}"
-        echo "Successfully pushed to GitHub Pages!"
-      displayName: 'Push Built Site to GitHub Pages (Bash)'
-      env:
-        # This is the crucial 'env' block. It maps your Azure DevOps pipeline variables
-        # (which are resolved by Azure DevOps) to environment variables that the Bash script
-        # can then access directly using $VAR_NAME.
-        GITHUB_PAT: $(GITHUB_PAT) # The secret from your linked variable group
-        ARTIFACTNAME: $(artifactName)
-        GITHUBPAGESBRANCH: $(githubPagesBranch)
-        BUILD_REPOSITORY_NAME: $(Build.Repository.Name)
-        BUILD_BUILDID: $(Build.BuildId)
-        PIPELINE_WORKSPACE: $(Pipeline.Workspace)
-    # --- END OF BASH SCRIPT CONVERSION ---
     - task: PowerShell@2
-      displayName: 'Push Built Site to GitHub Pages (PowerShell)'
+      displayName: 'Push to GitHub Pages'
       inputs:
         targetType: 'inline'
         script: |
@@ -137,15 +75,16 @@ stages:
 
           git push origin $($env:GITHUBPAGESBRANCH)
           Write-Host "Successfully pushed to GitHub Pages!"
-      env:
-        # This makes the value of $(GITHUB_PAT) (resolved by Azure DevOps) available
-        # as an environment variable named GITHUB_PAT to the PowerShell script.
-        GITHUB_PAT: $(GITHUB_PAT)
 
-        # It's good practice to explicitly map other pipeline variables
-        # you want to use as environment variables in the script:
-        ARTIFACTNAME: $(artifactName)
-        GITHUBPAGESBRANCH: $(githubPagesBranch)
-        BUILD_REPOSITORY_NAME: $(Build.Repository.Name)
-        BUILD_BUILDID: $(Build.BuildId)
-        PIPELINE_WORKSPACE: $(Pipeline.Workspace)
+  env:
+    # This makes the value of $(GITHUB_PAT) (resolved by Azure DevOps) available
+    # as an environment variable named GITHUB_PAT to the PowerShell script.
+    GITHUB_PAT: $(GITHUB_PAT)
+
+    # It's good practice to explicitly map other pipeline variables
+    # you want to use as environment variables in the script:
+    ARTIFACTNAME: $(artifactName)
+    GITHUBPAGESBRANCH: $(githubPagesBranch)
+    BUILD_REPOSITORY_NAME: $(Build.Repository.Name)
+    BUILD_BUILDID: $(Build.BuildId)
+    PIPELINE_WORKSPACE: $(Pipeline.Workspace)
