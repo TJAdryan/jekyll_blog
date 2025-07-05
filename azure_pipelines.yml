@@ -10,22 +10,26 @@ variables:
 stages:
 # ... (BuildBlog stage remains unchanged) ...
 
+
 - stage: DeployToGitHubPages
   displayName: 'Deploy to GitHub Pages'
   dependsOn: BuildBlog
-  condition: succeeded()
+  condition: succeeded() # Only deploy if the build was successful
 
   jobs:
   - job: DeployJob
     displayName: 'Push to GitHub Pages'
-    pool:
-      vmImage: 'ubuntu-latest' # Using ubuntu-latest is ideal for Bash scripts
-
     steps:
     - download: current
-      artifact: $(artifactName)
+      artifact: '$(artifactName)'
       displayName: 'Download Built Site Artifact'
 
+    # Call the external PowerShell script file
+    - task: PowerShell@2 
+      displayName: 'Execute Deployment Script'
+      inputs:
+        filePath: 'deploy.ps1' # Path to your new PowerShell script file
+        arguments: '-GitHubPatToken $(GITHUB_PAT)' # Still pass the PAT as an argument
     # --- START OF BASH SCRIPT CONVERSION ---
     - script: |
         #!/bin/bash # Explicitly use the Bash interpreter
