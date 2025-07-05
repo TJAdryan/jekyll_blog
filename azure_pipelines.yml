@@ -1,6 +1,10 @@
 # azure-pipelines.yml
 
 # ... (previous stages and variables are the same) ...
+variables:
+- group: nextvaldataBlogSecrets_update # Ensure this variable group is linked
+  artifactName: 'dist-blog-site'
+  githubPagesBranch: 'gh-pages'
 
 stages:
 # ... (BuildBlog stage remains unchanged) ...
