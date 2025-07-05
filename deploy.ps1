@@ -1,16 +1,19 @@
+# deploy.ps1 content (focus on these lines)
+
 param(
     [string]$GitHubPatToken
 )
 
-# Set Git user for the commit
-git config --global user.email "azure-devops@$(Build.Repository.Name).com"
-git config --global user.name "Azure DevOps CD Pipeline"
+# ... (other git config lines) ...
+
+# <<< THIS IS THE CRITICAL SECTION FOR THE URL FIX >>>
+# Extract just the repository name from $(Build.Repository.Name)
+# Example: if $(Build.Repository.Name) is "TJAdryan/jekyll_blog", this gets "jekyll_blog"
+$justRepoName = (Split-Path -Leaf "$(Build.Repository.Name)") 
 
 # Construct the correct GitHub URL using your GitHub username and the extracted repo name
 # Replace 'TJAdryan' with your actual GitHub username/organization if it's different.
-$repoName = "$(Build.Repository.Name)"
-
-$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/$repoName.git"
+$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/TJAdryan/$justRepoName.git"
 
 # Define the temporary path to clone into
 $tempRepoPath = "temp_repo"
@@ -18,6 +21,7 @@ $tempRepoPath = "temp_repo"
 Write-Host "Cloning repository from $gitRepoUrl"
 git clone $gitRepoUrl $tempRepoPath -ErrorAction Stop # Added -ErrorAction Stop to fail early
 
+# ... (rest of the script) ...
 # Navigate into the cloned repository
 Set-Location $tempRepoPath
 
