@@ -88,4 +88,3 @@ stages:
     BUILD_REPOSITORY_NAME: $(Build.Repository.Name)
     BUILD_BUILDID: $(Build.BuildId)
     PIPELINE_WORKSPACE: $(Pipeline.Workspace)
-    #testing redeployment
