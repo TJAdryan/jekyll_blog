@@ -6,12 +6,17 @@ param(
 git config --global user.email "azure-devops@$(Build.Repository.Name).com"
 git config --global user.name "Azure DevOps CD Pipeline"
 
-# Extract just the repository name from $(Build.Repository.Name)
-$justRepoName = (Split-Path -Leaf "$(Build.Repository.Name)") 
-
 # Construct the correct GitHub URL using your GitHub username and the extracted repo name
 # Replace 'TJAdryan' with your actual GitHub username/organization if it's different.
-$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/TJAdryan/$justRepoName.git"
+$repoName = "$(Build.Repository.Name)"
+$gitHubUsername = "TJAdryan"  # Replace with your actual GitHub username
+
+# Check if the username is repeated in the repo name and remove if it is
+if ($repoName.StartsWith("$gitHubUsername/$gitHubUsername")) {
+    $repoName = $repoName.Substring($gitHubUsername.Length + 1)
+}
+
+$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/$gitHubUsername/$repoName.git"
 
 # Define the temporary path to clone into
 $tempRepoPath = "temp_repo"
@@ -37,7 +42,7 @@ Copy-Item -Path "$(Pipeline.Workspace)/$(artifactName)/*" -Destination "." -Recu
 
 # Add all changes, commit, and push to the GitHub Pages branch
 git add .
-git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" -ErrorAction SilentlyContinue 
+git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" -ErrorAction SilentlyContinue
 
 Write-Host "Pushing changes to GitHub Pages branch $(githubPagesBranch)"
 git push origin $(githubPagesBranch)
