@@ -9,14 +9,8 @@ git config --global user.name "Azure DevOps CD Pipeline"
 # Construct the correct GitHub URL using your GitHub username and the extracted repo name
 # Replace 'TJAdryan' with your actual GitHub username/organization if it's different.
 $repoName = "$(Build.Repository.Name)"
-$gitHubUsername = "TJAdryan"  # Replace with your actual GitHub username
 
-# Check if the username is repeated in the repo name and remove if it is
-if ($repoName.StartsWith("$gitHubUsername/$gitHubUsername")) {
-    $repoName = $repoName.Substring($gitHubUsername.Length + 1)
-}
-
-$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/$gitHubUsername/$repoName.git"
+$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/$repoName.git"
 
 # Define the temporary path to clone into
 $tempRepoPath = "temp_repo"
