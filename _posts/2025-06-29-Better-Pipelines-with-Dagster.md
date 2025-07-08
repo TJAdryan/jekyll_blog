@@ -24,7 +24,7 @@ Also the way Dagster displays the logs and allows you to trace back any issues i
 
 If you are interested in getting some ideas for yourself you can follow the README which you to check out directly on the [GitHub repo](https://github.com/TJAdryan/dagster_starter) and walks through the process step by step. 
 
-It was great to be able to use Dagster's built-in decorators to define assets and jobs, making the code cleaner and more maintainable. The use of `@asset` for defining assets and `@job` for was helpful for organizing the jobs.  I did get tripped up from time to time, but the Dagster documentation was really helpful.  I also found the [Dagster Slack community](https://dagster.io/community) had a lot of great hints and encouraging advice.
+It was great to be able to use Dagster's built-in decorators to define assets and jobs, making the code cleaner and more maintainable. The use of `@asset` for defining assets and `@job` for was helpful for organizing the jobs.  I did get tripped up from time to time, but the Dagster documentation was really helpful.  I also found the [Dagster Slack community](https://dagster.io/community) had a lot of great hints and encouraging advice. Dagster examples tend to be dedicated to helping people with current workload issues especially in the [sciences](https://www.youtube.com/watch?v=XwuFgGvNibU). I love this.   
 
 The scheuduling from inside Dagster is also really nice.  As well as the logs and the ability to find the origins of errors relatively quickly.  I would love to see how other people are using Dagster in their projects.  If you have any tips or tricks, please let me know.  
 
