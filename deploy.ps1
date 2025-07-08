@@ -4,29 +4,15 @@ param(
     [string]$GitHubPatToken
 )
 
-# ... (other git config lines) ...
+# Set Git user for the commit
+git config --global user.email "azure-devops@$(Build.Repository.Name).com"
+git config --global user.name "Azure DevOps CD Pipeline"
 
-# <<< THIS IS THE CRITICAL SECTION FOR THE URL FIX >>>
-# Extract just the repository name from $(Build.Repository.Name)
-# Example: if $(Build.Repository.Name) is "TJAdryan/jekyll_blog", this gets "jekyll_blog"
-$justRepoName = (Split-Path -Leaf "$(Build.Repository.Name)") 
+# Define the GitHub Pages branch
+$gitHubPagesBranch = "$(githubPagesBranch)"
 
-# Construct the correct GitHub URL using your GitHub username and the extracted repo name
-# Replace 'TJAdryan' with your actual GitHub username/organization if it's different.
-$gitRepoUrl = "https://x-access-token:$GitHubPatToken@github.com/$justRepoName.git"
-
-# Define the temporary path to clone into
-$tempRepoPath = "temp_repo"
-
-Write-Host "Cloning repository from $gitRepoUrl"
-git clone $gitRepoUrl $tempRepoPath -ErrorAction Stop # Added -ErrorAction Stop to fail early
-
-# ... (rest of the script) ...
-# Navigate into the cloned repository
-Set-Location $tempRepoPath
-
-# Checkout the GitHub Pages branch. Create it if it doesn't exist.
-git checkout $(githubPagesBranch) -Force
+# Checkout the main branch
+git checkout main
 
 # Remove all existing files (except .git folder) to ensure a clean deploy.
 Write-Host "Cleaning existing files in $(Get-Location)"
@@ -42,5 +28,11 @@ Copy-Item -Path "$(Pipeline.Workspace)/$(artifactName)/*" -Destination "." -Recu
 git add .
 git commit -m "Azure DevOps CD: Deployed new blog content - $(Build.BuildId) [skip ci]" -ErrorAction SilentlyContinue
 
-Write-Host "Pushing changes to GitHub Pages branch $(githubPagesBranch)"
-git push origin $(githubPagesBranch)
+# Checkout the gh-pages branch
+git checkout $gitHubPagesBranch
+
+# Merge the changes from main into gh-pages
+git merge main
+
+Write-Host "Pushing changes to GitHub Pages branch $gitHubPagesBranch"
+git push origin $gitHubPagesBranch
