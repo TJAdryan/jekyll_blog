@@ -8,8 +8,6 @@ pool:
 
 variables:
 - group: nextvaldataBlogSecrets_update
-  artifactName: 'dist-blog-site'
-  githubPagesBranch: 'gh-pages'
 
 stages:
 - stage: BuildBlog
@@ -23,12 +21,14 @@ stages:
     - task: CmdLine@2
       displayName: 'Install Jekyll Dependencies (Bundler)'
       inputs:
-        script: 'bundle install'
+        script: |
+          gem install bundler
+          bundle install
         workingDirectory: '$(System.DefaultWorkingDirectory)'
     - task: CmdLine@2
       displayName: 'Build Jekyll Site'
       inputs:
-        script: 'bundle exec jekyll build'
+        script: 'bundle exec jekyll build --destination "$(Build.ArtifactStagingDirectory)/$(jekyllOutputFolder)"'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Built Site Artifact'
