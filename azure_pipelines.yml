@@ -1,65 +1,132 @@
 # azure-pipelines.yml
+# azure-pipelines.yml
+# This pipeline builds a Jekyll site from the 'main' branch
+# and then deploys the built content to the 'gh-pages' branch on GitHub.
 
 trigger:
-- main
+- main # Trigger this pipeline whenever there's a push to the 'main' branch
 
+# Use an Ubuntu agent, which is generally good for Ruby/Jekyll builds
 pool:
   vmImage: 'ubuntu-latest'
 
+# Link to your variable group for secrets and common variables
 variables:
-- group: nextvaldataBlogSecrets_update
+- group: nextvaldataBlogSecrets_update # Ensure this variable group contains GITHUB_PAT, GH_USER_EMAIL, GH_USER_NAME, jekyllOutputFolder, artifactName, githubPagesBranch
 
+# Define the stages of your CI/CD pipeline
 stages:
 - stage: BuildBlog
-  displayName: 'Build Blog'
+  displayName: 'Build Jekyll Site'
   jobs:
   - job: BuildJob
-    displayName: 'Build Site'
+    displayName: 'Compile Jekyll Site'
     steps:
+    # 1. Checkout the source code from the 'main' branch
     - checkout: self
-      persistCredentials: true
+      persistCredentials: false # Not needed for this stage, credentials will be used in deploy stage
+
+    # 2. Install Ruby and Jekyll dependencies
+    #    Using CmdLine as it's straightforward for gem commands
     - task: CmdLine@2
-      displayName: 'Install Jekyll Dependencies (Bundler)'
+      displayName: 'Install Jekyll Dependencies'
       inputs:
         script: |
+          # Install bundler gem if not present
           gem install bundler
-          bundle install
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+          # Install gems from Gemfile.lock
+          bundle install --jobs 4 --retry 3
+        workingDirectory: '$(System.DefaultWorkingDirectory)' # Run from repo root
+
+    # 3. Build the Jekyll site
+    #    Outputs to ArtifactStagingDirectory/_site (based on jekyllOutputFolder variable)
     - task: CmdLine@2
       displayName: 'Build Jekyll Site'
       inputs:
         script: 'bundle exec jekyll build --destination "$(Build.ArtifactStagingDirectory)/$(jekyllOutputFolder)"'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)' # Run from repo root
+
+    # 4. Publish the built site as a pipeline artifact
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Built Site Artifact'
       inputs:
-        PathtoPublish: '_site'
-        ArtifactName: '$(artifactName)'
-        publishLocation: 'Container'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(jekyllOutputFolder)' # Path where Jekyll built the site
+        ArtifactName: '$(artifactName)' # Name of the artifact (e.g., JekyllSiteArtifact)
+        publishLocation: 'Container' # Publish to pipeline artifact storage
 
 - stage: DeployToGitHubPages
   displayName: 'Deploy to GitHub Pages'
-  dependsOn: BuildBlog
-  condition: succeeded()
+  dependsOn: BuildBlog # This stage runs only after BuildBlog stage completes successfully
+  condition: succeeded() # Ensure deployment only proceeds if the build was successful
   jobs:
   - job: DeployJob
-    displayName: 'Push to GitHub Pages'
+    displayName: 'Push Built Site to gh-pages'
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-latest' # Use the same agent type as build for consistency
+
     steps:
+    # 1. Download the built site artifact from the BuildBlog stage
     - download: current
       artifact: $(artifactName)
       displayName: 'Download Built Site Artifact'
-    - task: PowerShell@2
-      displayName: 'Push to GitHub Pages'
+
+    # 2. Configure Git user for commits (Crucial for GitHub commit attribution)
+    #    Uses variables from your variable group (GH_USER_EMAIL, GH_USER_NAME)
+    - task: CmdLine@2
+      displayName: 'Configure Git User for Deployment'
+      inputs:
+        script: |
+          git config user.email "$(GH_USER_EMAIL)"
+          git config user.name "$(GH_USER_NAME)"
+
+    # 3. Prepare the gh-pages branch: clone, clean, and navigate
+    #    This task performs the complex Git operations
+    - task: Bash@3
+      displayName: 'Clone and Prepare gh-pages branch'
       inputs:
         targetType: 'inline'
-        scriptFilename: 'deploy.ps1'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        script: |
+          # Navigate to a temporary directory for cloning
+          # $(Agent.BuildDirectory) is typically _work/1/
+          mkdir -p $(Agent.BuildDirectory)/temp_repo
+          cd $(Agent.BuildDirectory)/temp_repo
+
+          # Clone the repository, checking out the gh-pages branch
+          # Use your GitHub PAT for authentication in the URL
+          # $(Build.Repository.Name) will be 'yourusername/yourreponame'
+          git clone --branch $(githubPagesBranch) https://$(GH_USER_NAME):$(GITHUB_PAT)@github.com/$(Build.Repository.Name).git .
+
+          # Remove all existing files from the gh-pages branch (but keep the .git folder)
+          # This ensures a clean deployment of the new build
+          git rm -rf .
+          
       env:
-        GITHUB_PAT: $(GITHUB_PAT)
-        ARTIFACTNAME: $(artifactName)
-        GITHUBPAGESBRANCH: $(githubPagesBranch)
-        BUILD_REPOSITORY_NAME: $(Build.Repository.Name)
-        BUILD_BUILDID: $(Build.BuildId)
-        PIPELINE_WORKSPACE: $(Pipeline.Workspace)
+        GITHUB_PAT: $(GITHUB_PAT) # Pass PAT as an environment variable for secure use in script
+
+    # 4. Copy the downloaded built site artifact into the cloned gh-pages directory
+    - task: CopyFiles@2
+      displayName: 'Copy Built Site to gh-pages Clone'
+      inputs:
+        SourceFolder: '$(Pipeline.Workspace)/$(artifactName)' # Path where artifact was downloaded
+        Contents: '**' # Copy all contents
+        TargetFolder: '$(Agent.BuildDirectory)/temp_repo' # Copy to the temporary cloned repo directory
+        cleanTargetFolder: false # Not needed as we did 'git rm -rf .'
+
+    # 5. Commit and Push the updated site to the gh-pages branch
+    - task: Bash@3
+      displayName: 'Commit and Push to gh-pages'
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd $(Agent.BuildDirectory)/temp_repo # Navigate back to the cloned repo directory
+          
+          # Add all new/modified/deleted files
+          git add --all
+          
+          # Commit the changes. The '|| true' allows the step to pass even if there are no file changes
+          git commit -m "Deploy Jekyll site from Azure DevOps build $(Build.BuildNumber)" || true
+          
+          # Push the changes to the gh-pages branch using the PAT for authentication
+          git push origin $(githubPagesBranch)
+      env:
+        GITHUB_PAT: $(GITHUB_PAT) # Ensure PAT is available for the push operation
