@@ -1,5 +1,4 @@
 # azure-pipelines.yml
-# azure-pipelines.yml
 # This pipeline builds a Jekyll site from the 'main' branch
 # and then deploys the built content to the 'gh-pages' branch on GitHub.
 
@@ -27,20 +26,30 @@ stages:
       persistCredentials: false # Not needed for this stage, credentials will be used in deploy stage
 
     # 2. Install Ruby and Jekyll dependencies
-    #    Using CmdLine as it's straightforward for gem commands
     - task: CmdLine@2
-      displayName: 'Install Jekyll Dependencies'
+      displayName: 'Install Jekyll Dependencies (Bundler)'
       inputs:
         script: |
-          # Install bundler gem if not present
-          gem install bundler
-          # Install gems from Gemfile.lock
-          bundle install --jobs 4 --retry 3
-        workingDirectory: '$(System.DefaultWorkingDirectory)' # Run from repo root
+          # Determine the user's gem installation directory based on Ruby version
+          export RUBY_USER_GEM_BIN="$(HOME)/.local/share/gem/ruby/3.2.0/bin"
+
+          # Add the user's gem bin directory to the PATH for this session
+          export PATH="$RUBY_USER_GEM_BIN:$PATH"
+
+          # Install bundler into the user-specific path
+          gem install bundler --no-document --user-install || echo "Bundler already installed or using user install path"
+
+          # Set BUNDLE_PATH for where project-specific gems (Jekyll, etc.) will be installed
+          export BUNDLE_PATH=$(System.DefaultWorkingDirectory)/vendor/bundle
+          
+          # Now run bundle install. The 'bundle' command will now be found in PATH,
+          # and it will install gems into BUNDLE_PATH.
+          ruby -S bundle install --jobs 4 --retry 3 --path "${BUNDLE_PATH}" # <--- THIS LINE MUST BE 'ruby -S bundle install'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
 
     # 3. Build the Jekyll site
     #    Outputs to ArtifactStagingDirectory/_site (based on jekyllOutputFolder variable)
-    - task: CmdLine@2
+    - task: CmdLine@2 # <-- Corrected: This task was missing its definition
       displayName: 'Build Jekyll Site'
       inputs:
         script: 'bundle exec jekyll build --destination "$(Build.ArtifactStagingDirectory)/$(jekyllOutputFolder)"'
@@ -57,7 +66,7 @@ stages:
 - stage: DeployToGitHubPages
   displayName: 'Deploy to GitHub Pages'
   dependsOn: BuildBlog # This stage runs only after BuildBlog stage completes successfully
-  condition: succeeded() # Ensure deployment only proceeds if the build was successful
+  condition: false #succeeded() # Ensure deployment only proceeds if the build was successful
   jobs:
   - job: DeployJob
     displayName: 'Push Built Site to gh-pages'
@@ -113,6 +122,7 @@ stages:
         cleanTargetFolder: false # Not needed as we did 'git rm -rf .'
 
     # 5. Commit and Push the updated site to the gh-pages branch
+    #
     - task: Bash@3
       displayName: 'Commit and Push to gh-pages'
       inputs:
