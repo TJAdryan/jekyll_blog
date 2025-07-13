@@ -1,4 +1,4 @@
-# azure-pipelines.yml
+# azure-pipelines.yml #Check twice
 
 # IMPORTANT: During troubleshooting, keep the 'trigger' commented out initially (Phase 1).
 # Uncomment it only in Phase 6 after main is clean and the YAML is fully updated.
