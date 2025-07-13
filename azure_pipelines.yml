@@ -1,4 +1,4 @@
-# azure-pipelines.yml
+# azure-pipelines.yml confirm change
 
 # Trigger the pipeline on pushes to your content branch (e.g., 'main')
 # IMPORTANT: During troubleshooting, keep this commented out initially (Phase 1).
