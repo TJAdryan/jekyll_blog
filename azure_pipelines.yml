@@ -89,38 +89,57 @@ stages:
       # --- Debugging the variable value ---
       Write-Host "DEBUG: Value of githubPagesBranch variable: '$env:githubPagesBranch'"
 
-      # Clone the GitHub repository into a temporary directory
-      # Ensure PAT is properly interpolated for the URL.
-      # Use `temp_repo` as the directory name.
-      # Explicitly clone the target branch (--branch). This is safer.
-      git clone --branch $env:githubPagesBranch https://x-access-token:$($env:GITHUB_PAT)@github.com/$(Build.Repository.Name).git temp_repo -depth 1 || `
-      # If cloning the branch directly fails (e.g., branch doesn't exist yet for first deploy),
-      # then clone without a branch and create it.
-      # Note: This `||` (OR) logic for PowerShell is important here.
-      { Write-Host "DEBUG: Failed to clone $env:githubPagesBranch directly, cloning main and creating branch."; `
-        git clone https://x-access-token:$($env:GITHUB_PAT)@github.com/$(Build.Repository.Name).git temp_repo -depth 1; `
-        Set-Location temp_repo; `
-        git checkout -b $env:githubPagesBranch; `
-        Set-Location .. } # Go back to root before setting location again
+      # --- START OF REVISED CLONING & CHECKOUT LOGIC ---
+      $repoUrl = "https://x-access-token:$($env:GITHUB_PAT)@github.com/$(Build.Repository.Name).git"
+      $targetBranch = $env:githubPagesBranch
+      $tempRepoDir = "temp_repo"
+
+      Write-Host "DEBUG: Cloning repository '$repoUrl' into '$tempRepoDir'."
+
+      # Attempt to clone the specific branch directly.
+      # If the branch doesn't exist, this command will fail.
+      $cloneResult = git clone --no-checkout --single-branch --branch $targetBranch $repoUrl $tempRepoDir 2>&1
+
+      if ($LASTEXITCODE -ne 0) {
+          Write-Host "DEBUG: Initial clone of '$targetBranch' failed. Trying to clone default branch and create '$targetBranch'."
+          Remove-Item -LiteralPath $tempRepoDir -Force -Recurse -ErrorAction SilentlyContinue # Clean up failed clone attempt
+
+          # Clone the default branch (usually 'main')
+          git clone --no-checkout --single-branch $repoUrl $tempRepoDir
+          Set-Location $tempRepoDir
+
+          # Try to create and checkout the target branch
+          git checkout -b $targetBranch
+          Write-Host "DEBUG: Successfully created and checked out new branch '$targetBranch'."
+          Set-Location .. # Go back to original directory before subsequent Set-Location
+
+      }
 
       # Navigate into the cloned repository
-      Set-Location temp_repo
+      Set-Location $tempRepoDir
 
-      # --- Debugging the actual branch after checkout/clone ---
-      Write-Host "DEBUG: Current branch after clone/checkout:"
+      # Ensure we are on the correct branch, even if it was cloned initially
+      git checkout $targetBranch
+      Write-Host "DEBUG: Final checkout to branch '$targetBranch' confirmed."
+
+      # --- Debugging the actual branch after clone/checkout ---
+      Write-Host "DEBUG: Current branch after all operations:"
       git branch -vv
       Write-Host "DEBUG: Git status after branch operations:"
       git status
+      Write-Host "DEBUG: Git remotes:"
+      git remote -v
+
+      # --- END OF REVISED CLONING & CHECKOUT LOGIC ---
+
 
       # Remove all existing files (except .git folder) to ensure a clean deploy.
-      # This is critical for synchronizing deletions from your source.
       Get-ChildItem -Path . -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
-      Write-Host "DEBUG: Cleared temp_repo directory contents."
+      Write-Host "DEBUG: Cleared '$tempRepoDir' directory contents."
 
       # Copy the newly built site files from the artifact download directory
-      # Ensure the source path is correct.
       Copy-Item -Path "$env:PIPELINE_WORKSPACE\$env:artifactName\*" -Destination . -Recurse -Force
-      Write-Host "DEBUG: Copied built site from artifact to temp_repo."
+      Write-Host "DEBUG: Copied built site from artifact to '$tempRepoDir'."
 
       # --- Debugging before commit ---
       Write-Host "DEBUG: Git status after copying files:"
@@ -131,12 +150,9 @@ stages:
       git commit -m "Azure DevOps CD: Deployed new blog content [skip ci]" || Write-Host "DEBUG: No changes to commit, skipping commit."
 
       # --- Debugging before push ---
-      Write-Host "DEBUG: Attempting to push to branch: $env:githubPagesBranch"
-      git remote -v # Show remote URLs
-      git branch # Show local branches
-
-      git push origin $env:githubPagesBranch
-      Write-Host "DEBUG: Push command executed."
+      Write-Host "DEBUG: Attempting to push to branch: $targetBranch"
+      Write-Host "DEBUG: Push command output:"
+      git push origin $targetBranch
 
       Set-Location .. # Go back to the pipeline's root working directory
       Write-Host "DEBUG: Deployment script finished."
@@ -145,3 +161,4 @@ stages:
       githubPagesBranch: $(githubPagesBranch)
       artifactName: $(artifactName)
       PIPELINE_WORKSPACE: $(Pipeline.Workspace)
+
