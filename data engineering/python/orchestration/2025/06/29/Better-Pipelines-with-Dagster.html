@@ -32,8 +32,8 @@
 <meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="Building Data Pipelines with Dagster: Practical" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far. I am definitely planning on diving further into it in the future but my initial experiences have been favorable. Of course, I ran into a a few issues. But mostly I was able to get things up and running, without too much trouble." />
-<meta property="og:description" content="I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far. I am definitely planning on diving further into it in the future but my initial experiences have been favorable. Of course, I ran into a a few issues. But mostly I was able to get things up and running, without too much trouble." />
+<meta name="description" content="I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far. I am definitely planning on diving further into it in the future but my initial experiences have been favorable. Of course, I ran into a a few issues. But mostly I was able to get things up and running, without too much trouble, and get value from using it right away." />
+<meta property="og:description" content="I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far. I am definitely planning on diving further into it in the future but my initial experiences have been favorable. Of course, I ran into a a few issues. But mostly I was able to get things up and running, without too much trouble, and get value from using it right away." />
 <link rel="canonical" href="https://nextvaldata.com/data%20engineering/python/orchestration/2025/06/29/Better-Pipelines-with-Dagster.html" />
 <meta property="og:url" content="https://nextvaldata.com/data%20engineering/python/orchestration/2025/06/29/Better-Pipelines-with-Dagster.html" />
 <meta property="og:site_name" content="NextValData" />
@@ -42,7 +42,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Building Data Pipelines with Dagster: Practical" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-06-29T00:00:00-04:00","datePublished":"2025-06-29T00:00:00-04:00","description":"I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far. I am definitely planning on diving further into it in the future but my initial experiences have been favorable. Of course, I ran into a a few issues. But mostly I was able to get things up and running, without too much trouble.","headline":"Building Data Pipelines with Dagster: Practical","mainEntityOfPage":{"@type":"WebPage","@id":"https://nextvaldata.com/data%20engineering/python/orchestration/2025/06/29/Better-Pipelines-with-Dagster.html"},"url":"https://nextvaldata.com/data%20engineering/python/orchestration/2025/06/29/Better-Pipelines-with-Dagster.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-06-29T00:00:00-04:00","datePublished":"2025-06-29T00:00:00-04:00","description":"I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far. I am definitely planning on diving further into it in the future but my initial experiences have been favorable. Of course, I ran into a a few issues. But mostly I was able to get things up and running, without too much trouble, and get value from using it right away.","headline":"Building Data Pipelines with Dagster: Practical","mainEntityOfPage":{"@type":"WebPage","@id":"https://nextvaldata.com/data%20engineering/python/orchestration/2025/06/29/Better-Pipelines-with-Dagster.html"},"url":"https://nextvaldata.com/data%20engineering/python/orchestration/2025/06/29/Better-Pipelines-with-Dagster.html"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -827,9 +827,9 @@
   class="readtime"
   data-bs-toggle="tooltip"
   data-bs-placement="bottom"
-  title="348 words"
+  title="376 words"
 >
-  <em>1 min</em> read</span>
+  <em>2 min</em> read</span>
 
         </div>
       </div>
@@ -839,7 +839,7 @@
   
 
   <div class="content">
-    <p>I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far.  I am definitely planning on diving further into it in the future but my initial experiences have been favorable.  Of course, I ran into a a few issues.  But mostly I was able to get things up and running, without too much trouble.</p>
+    <p>I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far.  I am definitely planning on diving further into it in the future but my initial experiences have been favorable.  Of course, I ran into a a few issues.  But mostly I was able to get things up and running, without too much trouble, and get value from using it right away.</p>
 
 <p>I tried to keep it simple, flowing from the NYC Open Data API through various Dagster assets, eventually feeding into both static PNG charts and the dynamic Streamlit dashboard. 
 Dagster updates the information and then it is displayed in the Streamlit app.  Here is an exmple of what the output looks like:</p>
@@ -855,7 +855,7 @@ Dagster updates the information and then it is displayed in the Streamlit app.  
 
 <p>If you are interested in getting some ideas for yourself you can follow the README which you to check out directly on the <a href="https://github.com/TJAdryan/dagster_starter">GitHub repo</a> and walks through the process step by step.</p>
 
-<p>It was great to be able to use Dagster’s built-in decorators to define assets and jobs, making the code cleaner and more maintainable. The use of <code class="language-plaintext highlighter-rouge">@asset</code> for defining assets and <code class="language-plaintext highlighter-rouge">@job</code> for was helpful for organizing the jobs.  I did get tripped up from time to time, but the Dagster documentation was really helpful.  I also found the <a href="https://dagster.io/community">Dagster Slack community</a> had a lot of great hints and encouraging advice.</p>
+<p>It was great to be able to use Dagster’s built-in decorators to define assets and jobs, making the code cleaner and more maintainable. The use of <code class="language-plaintext highlighter-rouge">@asset</code> for defining assets and <code class="language-plaintext highlighter-rouge">@job</code> for was helpful for organizing the jobs.  I did get tripped up from time to time, but the Dagster documentation was really helpful.  I also found the <a href="https://dagster.io/community">Dagster Slack community</a> had a lot of great hints and encouraging advice. Dagster examples tend to be dedicated to helping people with current workload issues especially in the <a href="https://www.youtube.com/watch?v=XwuFgGvNibU">sciences</a>. I love this.</p>
 
 <p>The scheuduling from inside Dagster is also really nice.  As well as the logs and the ability to find the origins of errors relatively quickly.  I would love to see how other people are using Dagster in their projects.  If you have any tips or tricks, please let me know.</p>
 

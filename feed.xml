@@ -4,7 +4,7 @@
   <id>https://nextvaldata.com/</id>
   <title>NextValData</title>
   <subtitle>This is the place where I try to document and improve my understanding of the things I am working on.  I am putting a lot of emphasis on try here. </subtitle>
-  <updated>2025-07-05T12:28:12-04:00</updated>
+  <updated>2025-07-13T16:25:33-04:00</updated>
   <author>
     <name>Dominick Ryan</name>
     <uri>https://nextvaldata.com/</uri>
@@ -42,7 +42,7 @@
     
   
 
-  <summary>I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far.  I am definitely planning on diving further into it in the future but my initial experiences have been favorable.  Of course, I ran into a a few issues.  But mostly I was able to get things up and running, without too much trouble.  I tried to keep it simple, flowing from the NYC Open Data ...</summary>
+  <summary>I am always looking for ways to improve my data pipelines, and Dagster has been really good to me so far.  I am definitely planning on diving further into it in the future but my initial experiences have been favorable.  Of course, I ran into a a few issues.  But mostly I was able to get things up and running, without too much trouble, and get value from using it right away.  I tried to keep it...</summary>
 
   </entry>
 
