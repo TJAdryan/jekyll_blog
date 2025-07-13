@@ -27,15 +27,15 @@ variables:
   # The name of the artifact that will contain your built website files.
   artifactName: 'nextvaldata_site'
 
-# Link to your Variable Group for secrets (like GITHUB_PAT)
-# This list must be at the same level as 'variables:' and 'pool:'
-# IMPORTANT: Ensure 'GitHubSecrets' is the exact name of your variable group
-# where GITHUB_PAT is stored as a secret.
-group: GitHubSecrets
+  # Link to your Variable Group for secrets (like GITHUB_PAT)
+  # IMPORTANT: Ensure 'GitHubSecrets' is the exact name of your variable group
+  # where GITHUB_PAT is stored as a secret.
+  group: GitHubSecrets
 # --- END CORRECTED VARIABLES AND VARIABLE GROUP INDENTATION ---
 
 ## ... (rest of your pipeline YAML before the DeployToGitHubPages stage) ...
 
+stages:
 - stage: DeployToGitHubPages
   displayName: 'Deploy to GitHub Pages'
   dependsOn: BuildBlog
