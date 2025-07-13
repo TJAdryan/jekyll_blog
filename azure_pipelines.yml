@@ -1,140 +1,145 @@
-# azure-pipelines.yml confirm change
+# azure-pipelines.yml
 
-# Trigger the pipeline on pushes to your content branch (e.g., 'main')
-# IMPORTANT: During troubleshooting, keep this commented out initially (Phase 1).
-# Uncomment it only in Phase 5 after main is clean and the YAML is fully updated.
+# IMPORTANT: During troubleshooting, keep the 'trigger' commented out initially (Phase 1).
+# Uncomment it only in Phase 6 after main is clean and the YAML is fully updated.
 # trigger:
 #   branches:
 #     include:
-#     - main # Or 'master', 'source', 'develop', etc., where your Jekyll source lives
+#     - main
 
-# Use a Microsoft-hosted agent for your build.
-# For public projects, you get unlimited minutes on these agents!
+# Pool specifies the virtual machine image where the pipeline jobs will run.
 pool:
-  vmImage: 'ubuntu-latest' # A recent Ubuntu image with Ruby/Bundler typically available
+  vmImage: 'ubuntu-latest'
 
-# --- CORRECTED VARIABLES AND VARIABLE GROUP INDENTATION ---
-# Variables for easy customization
+# Variables, including linking a variable group.
 variables:
-  # The branch on your GitHub repository that GitHub Pages serves from.
-  # THIS MUST BE 'gh-pages' for your custom build pipeline.
-  githubPagesBranch: 'gh-pages'
+  # Inline variables:
+  - name: githubPagesBranch
+    value: 'gh-pages'
+  - name: jekyllOutputFolder
+    value: '_site'
+  - name: artifactName
+    value: 'nextvaldata_site'
 
-  # The directory where Jekyll outputs the built static files.
-  # By default, Jekyll outputs to '_site'.
-  jekyllOutputFolder: '_site'
+  # Link to your Variable Group.
+  - group: GitHubSecrets # Ensure 'GitHubSecrets' is the exact name of your variable group.
 
-  # The name of the artifact that will contain your built website files.
-  artifactName: 'nextvaldata_site'
-
-  # Link to your Variable Group for secrets (like GITHUB_PAT)
-  # IMPORTANT: Ensure 'GitHubSecrets' is the exact name of your variable group
-  # where GITHUB_PAT is stored as a secret.
-  group: GitHubSecrets
-# --- END CORRECTED VARIABLES AND VARIABLE GROUP INDENTATION ---
-
-## ... (rest of your pipeline YAML before the DeployToGitHubPages stage) ...
-
+# Stages define distinct phases of your pipeline.
 stages:
+- stage: BuildBlog
+  displayName: 'Build Jekyll Blog'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build Static Site with Jekyll'
+    steps:
+    # Explicitly check out the source branch (main) with a clean workspace.
+    - checkout: self
+      clean: true
+      displayName: 'Clean Checkout of Source Branch'
+
+    - task: UseRubyVersion@0
+      displayName: 'Use Ruby Version (for Jekyll)'
+      inputs:
+        versionSpec: '3.2'
+        addToPath: true
+
+    - script: |
+        gem install bundler --no-document
+        bundle install --jobs 4 --retry 3
+      displayName: 'Install Jekyll Dependencies (Bundler)'
+
+    - script: |
+        bundle exec jekyll build --destination "$(Build.ArtifactStagingDirectory)/$(jekyllOutputFolder)"
+      displayName: 'Run Jekyll Build'
+
+    - publish: '$(Build.ArtifactStagingDirectory)/$(jekyllOutputFolder)'
+      artifact: '$(artifactName)'
+      displayName: 'Publish Website Artifact'
+
 - stage: DeployToGitHubPages
   displayName: 'Deploy to GitHub Pages'
   dependsOn: BuildBlog
-  condition: succeeded() # Only deploy if the build was successful
+  condition: succeeded()
 
   jobs:
-  - deployment: DeployJob # This is a deployment job type
+  - job: DeployJob # Changed from 'deployment' back to 'job'
     displayName: 'Push to GitHub Pages'
-    environment: GitHub-Pages-Deploy # <--- Ensure this matches the name of your Environment
-    strategy: # <--- THIS IS THE MISSING PIECE FOR DEPLOYMENT JOBS
-      runOnce: # For simple, non-rolling deployments
-        deploy:
-          steps:
-          - download: current
-            artifact: '$(artifactName)'
-            displayName: 'Download Built Site Artifact'
+    # --- ENVIRONMENT REFERENCE REMOVED ---
+    # environment: GitHub-Pages-Deploy  <--- REMOVED THIS LINE
+    # strategy: # <--- THIS BLOCK IS NO LONGER NEEDED FOR A REGULAR 'job' TYPE
+    #   runOnce:
+    #     deploy:
+    #       steps:
+    # --- END ENVIRONMENT REFERENCE REMOVED ---
+    steps: # Steps are directly under the 'job' for a regular job type
+    - download: current
+      artifact: '$(artifactName)'
+      displayName: 'Download Built Site Artifact'
 
-          # --- START OF CRITICAL DEPLOYMENT SCRIPT UPDATES ---
-          - task: PowerShell@2
-            displayName: 'Push to GitHub Pages'
-            inputs:
-              targetType: 'inline'
-              script: |
-                Write-Host "DEBUG: Starting deployment script."
+    - task: PowerShell@2
+      displayName: 'Push to GitHub Pages'
+      inputs:
+        targetType: 'inline'
+        script: |
+          Write-Host "DEBUG: Starting deployment script."
 
-                # Set Git user for the commit
-                git config --global user.email "azure-devops@${env:BUILD_REPOSITORY_NAME}.com"
-                git config --global user.name "Azure DevOps CD Pipeline"
+          git config --global user.email "azure-devops@${env:BUILD_REPOSITORY_NAME}.com"
+          git config --global user.name "Azure DevOps CD Pipeline"
 
-                # --- Debugging the variable value ---
-                Write-Host "DEBUG: Value of githubPagesBranch variable: '$env:githubPagesBranch'"
+          Write-Host "DEBUG: Value of githubPagesBranch variable: '$env:githubPagesBranch'"
 
-                # --- REVISED CLONING & CHECKOUT LOGIC ---
-                $repoUrl = "https://x-access-token:$($env:GITHUB_PAT)@github.com/$(Build.Repository.Name).git"
-                $targetBranch = $env:githubPagesBranch
-                $tempRepoDir = "temp_repo"
+          $repoUrl = "https://x-access-token:$($env:GITHUB_PAT)@github.com/$(Build.Repository.Name).git"
+          $targetBranch = $env:githubPagesBranch
+          $tempRepoDir = "temp_repo"
 
-                Write-Host "DEBUG: Cloning repository '$repoUrl' into '$tempRepoDir'."
+          Write-Host "DEBUG: Cloning repository '$repoUrl' into '$tempRepoDir'."
 
-                # Attempt to clone the specific branch directly.
-                # If the branch doesn't exist, this command will fail.
-                $cloneResult = git clone --no-checkout --single-branch --branch $targetBranch $repoUrl $tempRepoDir 2>&1
+          $cloneResult = git clone --no-checkout --single-branch --branch $targetBranch $repoUrl $tempRepoDir 2>&1
 
-                if ($LASTEXITCODE -ne 0) {
-                    Write-Host "DEBUG: Initial clone of '$targetBranch' failed. Trying to clone default branch and create '$targetBranch'."
-                    Remove-Item -LiteralPath $tempRepoDir -Force -Recurse -ErrorAction SilentlyContinue # Clean up failed clone attempt
+          if ($LASTEXITCODE -ne 0) {
+              Write-Host "DEBUG: Initial clone of '$targetBranch' failed. Trying to clone default branch and create '$targetBranch'."
+              Remove-Item -LiteralPath $tempRepoDir -Force -Recurse -ErrorAction SilentlyContinue
 
-                    # Clone the default branch (usually 'main')
-                    git clone --no-checkout --single-branch $repoUrl $tempRepoDir
-                    Set-Location temp_repo # Ensure we are in the cloned repo
-                    git checkout -b $targetBranch
-                    Write-Host "DEBUG: Successfully created and checked out new branch '$targetBranch'."
-                    Set-Location .. # Go back to root before setting location again
+              git clone --no-checkout --single-branch $repoUrl $tempRepoDir
+              Set-Location $tempRepoDir
+              git checkout -b $targetBranch
+              Write-Host "DEBUG: Successfully created and checked out new branch '$targetBranch'."
+              Set-Location ..
 
-                } else { # If clone of specific branch succeeded
-                    Set-Location temp_repo # Navigate into the successfully cloned repo
-                }
+          } else {
+              Set-Location $tempRepoDir
+          }
 
-                # Ensure we are on the correct branch, even if it was cloned initially
-                git checkout $targetBranch
-                Write-Host "DEBUG: Final checkout to branch '$targetBranch' confirmed."
+          git checkout $targetBranch
+          Write-Host "DEBUG: Final checkout to branch '$targetBranch' confirmed."
 
-                # --- Debugging the actual branch after clone/checkout ---
-                Write-Host "DEBUG: Current branch after all operations:"
-                git branch -vv
-                Write-Host "DEBUG: Git status after branch operations:"
-                git status
-                Write-Host "DEBUG: Git remotes:"
-                git remote -v
+          Write-Host "DEBUG: Current branch after all operations:"
+          git branch -vv
+          Write-Host "DEBUG: Git status after branch operations:"
+          git status
+          Write-Host "DEBUG: Git remotes:"
+          git remote -v
 
-                # --- END REVISED CLONING & CHECKOUT LOGIC ---
+          Get-ChildItem -Path . -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
+          Write-Host "DEBUG: Cleared '$tempRepoDir' directory contents."
 
+          Copy-Item -Path "$env:PIPELINE_WORKSPACE\$env:artifactName\*" -Destination . -Recurse -Force
+          Write-Host "DEBUG: Copied built site from artifact to '$tempRepoDir'."
 
-                # Remove all existing files (except .git folder) to ensure a clean deploy.
-                Get-ChildItem -Path . -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
-                Write-Host "DEBUG: Cleared '$tempRepoDir' directory contents."
+          Write-Host "DEBUG: Git status after copying files:"
+          git status
 
-                # Copy the newly built site files from the artifact download directory
-                Copy-Item -Path "$env:PIPELINE_WORKSPACE\$env:artifactName\*" -Destination . -Recurse -Force
-                Write-Host "DEBUG: Copied built site from artifact to '$tempRepoDir'."
+          git add .
+          git commit -m "Azure DevOps CD: Deployed new blog content [skip ci]" || Write-Host "DEBUG: No changes to commit, skipping commit."
 
-                # --- Debugging before commit ---
-                Write-Host "DEBUG: Git status after copying files:"
-                git status
+          Write-Host "DEBUG: Attempting to push to branch: $targetBranch"
+          Write-Host "DEBUG: Push command output:"
+          git push origin $targetBranch
 
-                # Add all changes, commit, and push to the GitHub Pages branch
-                git add .
-                git commit -m "Azure DevOps CD: Deployed new blog content [skip ci]" || Write-Host "DEBUG: No changes to commit, skipping commit."
-
-                # --- Debugging before push ---
-                Write-Host "DEBUG: Attempting to push to branch: $targetBranch"
-                Write-Host "DEBUG: Push command output:"
-                git push origin $targetBranch
-
-                Set-Location .. # Go back to the pipeline's root working directory
-                Write-Host "DEBUG: Deployment script finished."
-            env:
-              GITHUB_PAT: $(GITHUB_PAT)
-              githubPagesBranch: $(githubPagesBranch)
-              artifactName: $(artifactName)
-              PIPELINE_WORKSPACE: $(Pipeline.Workspace)
-          # --- END OF CRITICAL DEPLOYMENT SCRIPT UPDATES ---
+          Set-Location ..
+          Write-Host "DEBUG: Deployment script finished."
+      env:
+        GITHUB_PAT: $(GITHUB_PAT)
+        githubPagesBranch: $(githubPagesBranch)
+        artifactName: $(artifactName)
+        PIPELINE_WORKSPACE: $(Pipeline.Workspace)
