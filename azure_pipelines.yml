@@ -75,39 +75,73 @@ stages:
     # and add a secret variable named 'GITHUB_PAT' with your PAT as its value.
     # Link this variable group to your pipeline.
     # The PAT needs 'repo' scope on GitHub.
-    - task: PowerShell@2
-      displayName: 'Push to GitHub Pages'
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Set Git user for the commit
-          git config --global user.email "azure-devops@${env:BUILD_REPOSITORY_NAME}.com"
-          git config --global user.name "Azure DevOps CD Pipeline"
+- task: PowerShell@2
+  displayName: 'Push to GitHub Pages'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "DEBUG: Starting deployment script."
 
-          # Clone the GitHub repository into a temporary directory
-          git clone https://x-access-token:$(GITHUB_PAT)@github.com/$(Build.Repository.Name).git temp_repo
+      # Set Git user for the commit
+      git config --global user.email "azure-devops@${env:BUILD_REPOSITORY_NAME}.com"
+      git config --global user.name "Azure DevOps CD Pipeline"
 
-          # Navigate into the cloned repository
-          Set-Location temp_repo
+      # --- Debugging the variable value ---
+      Write-Host "DEBUG: Value of githubPagesBranch variable: '$env:githubPagesBranch'"
 
-          # Checkout the GitHub Pages branch. Create it if it doesn't exist.
-          git checkout $env:githubPagesBranch 2>$null
-          if ($LASTEXITCODE -ne 0) {
-            git checkout -b $env:githubPagesBranch
-          }
+      # Clone the GitHub repository into a temporary directory
+      # Ensure PAT is properly interpolated for the URL.
+      # Use `temp_repo` as the directory name.
+      # Explicitly clone the target branch (--branch). This is safer.
+      git clone --branch $env:githubPagesBranch https://x-access-token:$($env:GITHUB_PAT)@github.com/$(Build.Repository.Name).git temp_repo -depth 1 || `
+      # If cloning the branch directly fails (e.g., branch doesn't exist yet for first deploy),
+      # then clone without a branch and create it.
+      # Note: This `||` (OR) logic for PowerShell is important here.
+      { Write-Host "DEBUG: Failed to clone $env:githubPagesBranch directly, cloning main and creating branch."; `
+        git clone https://x-access-token:$($env:GITHUB_PAT)@github.com/$(Build.Repository.Name).git temp_repo -depth 1; `
+        Set-Location temp_repo; `
+        git checkout -b $env:githubPagesBranch; `
+        Set-Location .. } # Go back to root before setting location again
 
-          # Remove all existing files (except .git folder) to ensure a clean deploy.
-          Get-ChildItem -Path . -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
+      # Navigate into the cloned repository
+      Set-Location temp_repo
 
-          # Copy the newly built site files from the artifact download directory
-          Copy-Item -Path "$env:PIPELINE_WORKSPACE\$env:artifactName\*" -Destination . -Recurse -Force
+      # --- Debugging the actual branch after checkout/clone ---
+      Write-Host "DEBUG: Current branch after clone/checkout:"
+      git branch -vv
+      Write-Host "DEBUG: Git status after branch operations:"
+      git status
 
-          # Add all changes, commit, and push to the GitHub Pages branch
-          git add .
-          git commit -m "Azure DevOps CD: Deployed new blog content [skip ci]"
-          git push origin $env:githubPagesBranch
-      env:
-        GITHUB_PAT: $(GITHUB_PAT)
-        githubPagesBranch: $(githubPagesBranch)
-        artifactName: $(artifactName)
-        PIPELINE_WORKSPACE: $(Pipeline.Workspace)
+      # Remove all existing files (except .git folder) to ensure a clean deploy.
+      # This is critical for synchronizing deletions from your source.
+      Get-ChildItem -Path . -Force | Where-Object { $_.Name -ne '.git' } | Remove-Item -Recurse -Force
+      Write-Host "DEBUG: Cleared temp_repo directory contents."
+
+      # Copy the newly built site files from the artifact download directory
+      # Ensure the source path is correct.
+      Copy-Item -Path "$env:PIPELINE_WORKSPACE\$env:artifactName\*" -Destination . -Recurse -Force
+      Write-Host "DEBUG: Copied built site from artifact to temp_repo."
+
+      # --- Debugging before commit ---
+      Write-Host "DEBUG: Git status after copying files:"
+      git status
+
+      # Add all changes, commit, and push to the GitHub Pages branch
+      git add .
+      git commit -m "Azure DevOps CD: Deployed new blog content [skip ci]" || Write-Host "DEBUG: No changes to commit, skipping commit."
+
+      # --- Debugging before push ---
+      Write-Host "DEBUG: Attempting to push to branch: $env:githubPagesBranch"
+      git remote -v # Show remote URLs
+      git branch # Show local branches
+
+      git push origin $env:githubPagesBranch
+      Write-Host "DEBUG: Push command executed."
+
+      Set-Location .. # Go back to the pipeline's root working directory
+      Write-Host "DEBUG: Deployment script finished."
+    env:
+      GITHUB_PAT: $(GITHUB_PAT)
+      githubPagesBranch: $(githubPagesBranch)
+      artifactName: $(artifactName)
+      PIPELINE_WORKSPACE: $(Pipeline.Workspace)
