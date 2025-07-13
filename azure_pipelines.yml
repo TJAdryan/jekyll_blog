@@ -1,9 +1,9 @@
 # azure-pipelines.yml
 # Trigger the pipeline on pushes to your content branch (e.g., 'main')
-trigger:
-  branches:
-    include:
-    - main # Or 'master', 'source', 'develop', etc., where your Jekyll source lives
+# trigger:
+#   branches:
+#     include:
+#     - main # Or 'master', 'source', 'develop', etc., where your Jekyll source lives
 
 # Use a Microsoft-hosted agent for your build.
 # For public projects, you get unlimited minutes on these agents!
