@@ -1,9 +1,9 @@
 # azure-pipelines.yml #Check twice
 
-trigger:
-  branches:
-    include:
-    - main # Keep this for builds on main branch commits
+# trigger:
+#   branches:
+#     include:
+#     - main # Keep this for builds on main branch commits
 
 schedule: # <-- ADD THIS BLOCK FOR DAILY BUILDS
   - cron: "0 0 * * *" # Runs every day at 00:00 UTC
