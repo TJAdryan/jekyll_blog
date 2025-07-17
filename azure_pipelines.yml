@@ -1,11 +1,17 @@
 # azure-pipelines.yml #Check twice
 
-# IMPORTANT: During troubleshooting, keep the 'trigger' commented out initially (Phase 1).
-# Uncomment it only in Phase 6 after main is clean and the YAML is fully updated.
-# trigger:
-#   branches:
-#     include:
-#     - main
+trigger:
+  branches:
+    include:
+    - main # Keep this for builds on main branch commits
+
+schedule: # <-- ADD THIS BLOCK FOR DAILY BUILDS
+  - cron: "0 0 * * *" # Runs every day at 00:00 UTC
+    displayName: 'Daily Blog Rebuild'
+    branches:
+      include:
+      - main # Which branch's state should trigger the daily build
+    always: true # Ensures the pipeline runs even if there are no new commits on 'main'
 
 # Pool specifies the virtual machine image where the pipeline jobs will run.
 pool:
