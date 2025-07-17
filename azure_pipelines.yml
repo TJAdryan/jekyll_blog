@@ -23,7 +23,7 @@ variables:
 
 
   # Link to your Variable Group.
-  - group: nexvaldataBlogSecrets_update # Ensure 'nexvaldataBlogSecrets_update' is the exact name of your variable group.
+  #- group: nexvaldataBlogSecrets_update # Ensure 'nexvaldataBlogSecrets_update' is the exact name of your variable group.
 
 # Stages define distinct phases of your pipeline.
 stages:
