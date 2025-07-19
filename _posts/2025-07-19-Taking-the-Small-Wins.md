@@ -6,9 +6,8 @@ categories: [Python, Performance, APIs, DataEngineering, orjson, Optimization]
 tags: [Python, API, performance, optimization, json, orjson, benchmark, data pipeline, incremental improvement, long-term code health]
 ---
 
-# Taking the Small Wins: How Incremental Improvements Cut My API Call Times from 70 to 45 Minutes
 
-As someone who looks back at their own code and sees a mix of pride and regret, I am often torn between the desire to improve what is there and the fear of breaking something that already works. I am sure this is a common feeling, and not just something I suffer from (right?). However, sometimes there are opportunities to make small, incremental improvements that can lead to significant performance gains ~~without~~ just a small risk of a complete overhaul. This post is about one such improvement I made recently that cut my nightly API call times from 70 minutes to 45 minutes—a 36.44% speedup—by optimizing how I parsed JSON data.
+As someone who looks back at their own code and sees a mix of pride and regret, I am often torn between the desire to improve what is there and the fear of breaking something that already works. I am sure this is a common feeling, and not just something I suffer from (right?). However, sometimes there are opportunities to make small, incremental improvements that can lead to significant performance gains ~~without~~ with just a small risk of a catastrophic failure. This post is about one such improvement I made recently that cut my nightly API call times from 70 minutes to 45 minutes—a 36.44% speedup—by optimizing how I parsed JSON data.
 
 ### The Nightly Grind: My API Performance Bottleneck
 
