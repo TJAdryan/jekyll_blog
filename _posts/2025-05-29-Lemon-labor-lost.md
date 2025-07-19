@@ -20,3 +20,17 @@ I opened the package on the walk home. The cookie part had no lemon flavor, it w
 
 I don't know what specific lemon cookie from my past set this high, yet seemingly unachievable, bar. But its memory drives my continued search. It might be that I am nostalgic or have unrealistic expections. Anyway if anyone knows of lemon cookie they really enjoy I'd love to hear about it.
 There are some lemon cookies I like. These [are great](https://www.tatesbakeshop.com/cookies/flavors/new-lemon-cookies) but they don't have any icing.
+
+
+**Update:**
+
+I am happy to report that I have found a lemon treat that satisfies my craving! While technically not a cookie, the [Bonne Maman Raspberry Tartlets](https://bonnemaman.us/products/bonne-maman-raspberry-tartlets-copy) have a delightful lemon flavor in the shortbread crust that is exactly what I was looking for. The raspberry filling is a bonus!
+
+<figure style="text-align: center;">
+  <img src="https://bonnemaman.us/cdn/shop/products/Raspberry_copy_1024x1024.png?v=1614638290" alt="Bonne Maman Raspberry Tartlets" style="width: 300px; height: auto;">
+  <figcaption style="font-size: smaller; color: gray;">The end of my quest? Bonne Maman Raspberry Tartlets</figcaption>
+</figure>
+
+So, for now, my quest has come to a satisfying end. However, I am always open to trying other lemon cookies, so please keep the recommendations coming! 
+
+
