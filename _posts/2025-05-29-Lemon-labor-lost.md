@@ -24,7 +24,7 @@ There are some lemon cookies I like. These [are great](https://www.tatesbakeshop
 
 **Update:**
 
-I am happy to report that I have found a lemon treat that satisfies my craving! While technically not a cookie, the [Bonne Maman Lemon Tartlets](https://bonnemaman.us/products/bonne-maman-raspberry-tartlets-copy) have a delightful lemon flavor in the shortbread crust that is exactly what I was looking for. The lemon filling is great, not the icing I was thinking I was looking for but very nice.  Almost like a little creme brulee. 
+I am happy to report that I have found a lemon treat that satisfies my craving! While technically not a cookie, the [Bonne Maman Lemon Tartlets](https://bonnemaman.us/products/bonne-maman-raspberry-tartlets-copy) have a delightful lemon flavor in the shortbread crust that is exactly what I was looking for. The lemon filling is great, not the icing I was thinking I was looking for but very nice.  Almost like a little creme brulee. Weirdly the link is mislabeled as "Raspberry Tartlets" but the image and product description confirm they are indeed lemon tartlets.
 
 <figure style="text-align: center;">
   <img src="https://bonnemaman.us/cdn/shop/products/Raspberry_copy_1024x1024.png?v=1614638290" alt="Bonne Maman Raspberry Tartlets" style="width: 300px; height: auto;">
