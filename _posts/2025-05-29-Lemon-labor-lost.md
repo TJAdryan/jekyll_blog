@@ -31,6 +31,6 @@ I am happy to report that I have found a lemon treat that satisfies my craving! 
   <figcaption style="font-size: smaller; color: gray;">The end of my quest? Bonne Maman Raspberry Tartlets</figcaption>
 </figure>
 
-So, for now, my quest has come to a satisfying end. Maybe I am not fated to be a perpetually unsatisified maximizer, which is real relief. However, I am always open to trying other lemon cookies, so please keep the recommendations coming! 
+So, for now, my quest has come to a satisfying end. Maybe I am not fated to be a perpetually unsatisified maximizer, there is hope. However, I am always open to trying other lemon cookies, so please keep the recommendations coming! 
 
 
