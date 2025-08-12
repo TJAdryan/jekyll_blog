@@ -38,7 +38,7 @@ Enhanced Interoperability through Transposition: The technical capability to tra
 The Critical Nuance: Beyond Pure Efficiency
 While the technical narrative focuses on streamlining workflows, it's essential to acknowledge the inherent tensions within the provider-insurer relationship. The very data exchange facilitated by HL7 and FHIR, while possessing the potential to reduce administrative burden for both sides, also serves critical financial interests.
 
-The reality in New York and the wider healthcare system is that these interactions are not solely about collaborative efficiency. Insurers leverage detailed patient data to:
+The reality in our healthcare system is that these interactions are not solely about collaborative efficiency. Insurers leverage detailed patient data to:
 
 Refine Claim Adjudication: Faster and more comprehensive access to clinical information technically enables more efficient claims processing. However, it also equips payers with more data points for potential denials based on coverage rules, coding discrepancies, or lack of documented medical necessity.
 
