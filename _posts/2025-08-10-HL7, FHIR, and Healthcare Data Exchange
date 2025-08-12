@@ -1,6 +1,7 @@
 ---
 title: "HL7, FHIR, and Healthcare Data Exchange"
-date: 2025-08-10
+date: 2025-08-10 12:00:00 -0400  # Added time and timezone
+layout: post                    # Added layout
 categories: [Healthcare Technology, Data Integration, Interoperability]
 tags: [HL7, FHIR, healthcare data, Java, Mirth Connect, healthcare interoperability, data exchange]
 ---
