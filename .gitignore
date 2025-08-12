@@ -7,3 +7,6 @@ vendor/
 Gemfile.lock
 *.gem
 .DS_Store
+.gz
+.tar.gz
+.tar
