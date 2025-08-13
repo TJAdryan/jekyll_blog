@@ -4,7 +4,7 @@
   <id>https://nextvaldata.com/</id>
   <title>NextValData</title>
   <subtitle>This is the place where I try to document and improve my understanding of the things I am working on.  I am putting a lot of emphasis on try here. </subtitle>
-  <updated>2025-08-13T14:02:53-04:00</updated>
+  <updated>2025-08-13T14:10:05-04:00</updated>
   <author>
     <name>Dominick Ryan</name>
     <uri>https://nextvaldata.com/</uri>
@@ -17,6 +17,34 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>HL7 FHIR and Healthcare Data Exchange</title>
+    <link href="https://nextvaldata.com/healthcare%20technology/data%20integration/interoperability/2025/08/10/HL7-FHIR-and-Healthcare-Data-Exchange.html" rel="alternate" type="text/html" title="HL7 FHIR and Healthcare Data Exchange" />
+    <published>2025-08-10T12:00:00-04:00</published>
+  
+    <updated>2025-08-10T12:00:00-04:00</updated>
+  
+    <id>https://nextvaldata.com/healthcare%20technology/data%20integration/interoperability/2025/08/10/HL7-FHIR-and-Healthcare-Data-Exchange.html</id>
+    <content type="text/html" src="https://nextvaldata.com/healthcare%20technology/data%20integration/interoperability/2025/08/10/HL7-FHIR-and-Healthcare-Data-Exchange.html" />
+    <author>
+      <name>Dominick Ryan</name>
+    </author>
+
+  
+    
+    <category term="Healthcare Technology" />
+    
+    <category term="Data Integration" />
+    
+    <category term="Interoperability" />
+    
+  
+
+  <summary>In Our country’s healthcare landscape, the drive for seamless data exchange through standards like HL7 (Health Level Seven) and the modern FHIR (Fast Healthcare Interoperability Resources) is undeniable. The technical promise is one of efficiency and improved communication between healthcare providers and insurers. However, a pragmatic view acknowledges the dual nature of these powerful tools. ...</summary>
+
+  </entry>
 
   
   <entry>
@@ -131,32 +159,6 @@
   
 
   <summary>Hoping for an A.  In Part I , we got our feet wet by performing initial data explorations on the NYC restaurant inspection dataset directly from a CSV file. We saw how DuckDB allows for quick insights without full data loading into memory.  I felt like I didn’t get to cover everything I wanted to touch in the last post so here I will focus on some of the other capabilities namely as a lightweig...</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>DuckDB - Diners, Drives, and Databases Part I</title>
-    <link href="https://nextvaldata.com/data%20engineering/python/2025/06/06/DuckDB-Diners-Drives-and-Databases.html" rel="alternate" type="text/html" title="DuckDB - Diners, Drives, and Databases Part I" />
-    <published>2025-06-06T00:00:00-04:00</published>
-  
-    <updated>2025-06-06T00:00:00-04:00</updated>
-  
-    <id>https://nextvaldata.com/data%20engineering/python/2025/06/06/DuckDB-Diners-Drives-and-Databases.html</id>
-    <content type="text/html" src="https://nextvaldata.com/data%20engineering/python/2025/06/06/DuckDB-Diners-Drives-and-Databases.html" />
-    <author>
-      <name>Dominick Ryan</name>
-    </author>
-
-  
-    
-    <category term="Data Engineering" />
-    
-    <category term="Python" />
-    
-  
-
-  <summary>Hoping for an A.  Pandas has been my go-to tool for data manipulation in Python for years. So great for me, right?  End of blog post.  Except…  “If the only tool you have is a hammer, you will see every problem as a nail.” This dollop of wisdom, often attributed to Maslow, reminds us that the solutions we find are often shaped by the tools we have available. I’m not calling Pandas a hammer; it’...</summary>
 
   </entry>
 
